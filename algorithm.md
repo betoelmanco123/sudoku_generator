@@ -75,7 +75,7 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
             - If the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `best_option` to `(row ,column)`
 1. Return `value`
 
-## ** Implementation on python**
+## **Implementation on python**
 ```python
 def get_next_target(sudoku: list[list[int]]) -> tuple:
     length = 10
@@ -92,7 +92,8 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
     return best_option
 ```
 
-is_filled(sudoku)
+`is_filled(sudoku)`
+##**Description**
 - for i=0 to 9 
 -- for j = 0 to 9
 --- if sudoku on the position (i, j) is different from None
