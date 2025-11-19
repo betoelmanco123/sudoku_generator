@@ -104,7 +104,15 @@ This function takes a sudoku as input and returns `False` if the sudoku have a `
     - For `column` from 0 to 9
         - If `sudoku[row][column] != None`, return `False`
 1. Return `True`
-
+### **Implementation on python**
+``` python 
+def is_filled(sudoku) -> bool:
+    for row in sudoku:
+        for element in row:
+            if not element:
+                return False
+    return True
+```
 
 print_sudoku(sudoku)
 - for i = 0 to 9 repeat
