@@ -41,7 +41,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
         for column in range(len(sudoku)):
             # only check empty squares
             if not sudoku[row][column]:
-                current = len(get_avaiable_numbers(sudoku, (row, column)))
+                current = len(get_options(sudoku, (row, column)))
                 # if a square can only have one number, then we inmediatly take it
                 if current == 1:
                     return (row, column)
@@ -53,7 +53,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
 
 
 # returns all the posibles values for a given position on a given board
-def get_avaiable_numbers(
+def get_options(
     sudoku: list[list[int]], position: tuple[int, int]
 ) -> list[int]:
     x, y = position
@@ -123,7 +123,7 @@ def has_solution(sudoku1):
     target = get_next_target(sudoku)
     x, y = target
     # get the avaiable options
-    options = get_avaiable_numbers(sudoku, target)
+    options = get_options(sudoku, target)
     # iterate over every option
     for k in options:
         sudoku[x][y] = k
@@ -150,7 +150,7 @@ def has_unique_solution(sudoku):
 
         # Elegir siguiente casilla
         x, y = get_next_target(sudoku)
-        options = get_avaiable_numbers(sudoku, (x, y))
+        options = get_options(sudoku, (x, y))
 
         for k in options:
             sudoku[x][y] = k
@@ -173,7 +173,7 @@ def get_next_target_random(sudoku):
     for i in range(len(sudoku)):
         for j in range(len(sudoku)):
             if not sudoku[i][j]:
-                values = get_avaiable_numbers(sudoku, (i, j))
+                values = get_options(sudoku, (i, j))
                 if len(values) < length:
                     length = len(values)
                     options = [(i, j)]
@@ -190,7 +190,7 @@ def get_next_target_filled_random(sudoku):
     for i in range(len(sudoku)):
         for j in range(len(sudoku)):
             if sudoku[i][j]:
-                values = get_avaiable_numbers(sudoku, (i, j))
+                values = get_options(sudoku, (i, j))
                 if len(values) < length:
                     length = len(values)
                     options = [(i, j)]
@@ -213,7 +213,7 @@ def generate_sudoku_filled():
         target = get_next_target_random(sudoku)
         x, y = target
         # get the avaiable options
-        options = get_avaiable_numbers(sudoku, target)
+        options = get_options(sudoku, target)
         # iterate over every option
         copy = options[:]
         for _ in range(len(options)):
@@ -272,15 +272,11 @@ def solve_sudoku(sudoku):
         if is_filled(sudoku):
             record.append([row[:] for row in sudoku])
             return True
-        # choose the target
-        target = get_next_target(sudoku)
-        x, y = target
-        # get the avaiable options
-        options = get_avaiable_numbers(sudoku, target)
-        # iterate over every option
-        for k in options:
+        x, y = get_next_target(sudoku)
+        options = get_options(sudoku, (x, y))
+        for number in options:
             # set the option in the sudoku
-            sudoku[x][y] = k
+            sudoku[x][y] = number
             # save the step to the record
             record.append([row[:] for row in sudoku])
             if _solve_sudoku(sudoku):

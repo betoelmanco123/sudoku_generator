@@ -1,6 +1,6 @@
 import pygame, time
 
-from sudoku.sudoku import (
+from sudoku import (
     get_playable_sudoku,
     solve_sudoku,
     get_range,

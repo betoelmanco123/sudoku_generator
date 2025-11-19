@@ -10,9 +10,9 @@ Each function present:
 1. Description
 1. Input requieried
 1. Output
-1. Pseudocodigo
+1. Pseudocode
 1. Python implementation.
-## `get_posibble_options(sudoku, position)`
+## `get_options(sudoku, position)`
 
 ### **Description**
 This function takes a sudoku and a position and return all the possible numbers the square can take
@@ -58,7 +58,7 @@ def get_possible_options(sudoku: list[list] , position: tuple[int]) -> list[int]
 
 ## `get_the_next_target(sudoku)`
 ### **Description**
-This function takes a board of sudoku and returns the position a `EMPTY` square 
+This function takes a board of sudoku and returns the position of a `EMPTY` square 
 ### **Arguments**
 - Sudoku with `EMPTY`squares
 ### **Output**
@@ -175,16 +175,29 @@ This function takes a sudoku as argument and modify it to the solution, return `
 - `True` if the sudoku has solution, `False` otherwise 
 ### **Pseudocode**
 1. If `is_filled(sudoku)`, return `True`
-1. Let `target = get_next_target(sudoku)`
+1. Let `x, y = get_next_target(sudoku)`
 1. Let `options = get_options(sudoku, target)`
-1.
--for each value in the posibble numbers as number repeat:
--- set the sudoku on the target position to number
--- call the function sudoku_solver giving the updated position of the board and save the result in result
--- if result is True then return True
-- set the sudoku on the target position to None
-- return False
-
+1. For `number in option`, do:
+    - Set `sudoku[x][y] = number`
+    - If `_solve_sudoku(sudoku)`, return `True`
+- Set `sudoku[x][y] = None`
+- Return `False`
+### **Implementation on python**
+```python
+def _solve_sudoku(sudoku):
+    if is_filled(sudoku):
+        record.append([row[:] for row in sudoku])
+        return True
+    x, y = get_next_target(sudoku)
+    options = get_options(sudoku, (x, y))
+    for k in options:
+        sudoku[x][y] = k
+        record.append([row[:] for row in sudoku])
+        if _solve_sudoku(sudoku):
+            return True
+    sudoku[x][y] = None
+    return False
+```
 
 count_not_empty(sudoku)
 - create a variable named count and set it value to 0
