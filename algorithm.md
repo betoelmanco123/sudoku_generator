@@ -68,7 +68,7 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
 1. Let `best_option = None`
 1. for `row` from `0 to 9`, do:
     - For `column`from `0 to 9` do:
-       -If `not sudoku[row][column]` then:
+       - If `not sudoku[row][column]` then:
            - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
             - If the `len` of `temp` is `1`, return `(row, column)`
