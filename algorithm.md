@@ -65,17 +65,31 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
 - Position in format (x, y)
 ### **Pseudocode**
 1. Let `length = 10`
-1. Let `value = None`
+1. Let `best_option = None`
 1. for `row` from `0 to 9`, do:
     - For `column`from `0 to 9` do:
        - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
         - If the `len` of `temp` is `1`, return `(row, column)`
-        - If the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `value` to `(row ,column)`
+        - If the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `best_option` to `(row ,column)`
 1. Return `value`
 
 ## ** Implementation on python**
-
+```python
+def get_next_target(sudoku: list[list[int]]) -> tuple:
+    length = 10
+    best_option = None
+    for row in range(9):
+        for column in range(9):
+            if not sudoku[row][column]:
+                current = len(get_possible_options(sudoku, (row, column)))
+                if current == 1:
+                    return (row, column)
+                if current < length:
+                    length = current
+                    best_option = (row, column)
+    return best_option
+```
 
 is_filled(sudoku)
 - for i=0 to 9 
