@@ -17,7 +17,7 @@ EMPTY = None
 
 
 # check if a sudoku its all filled with numbers
-def is_filled(sudoku: list[list[int]]) -> bool:
+def is_filled(sudoku) -> bool:
     for row in sudoku:
         for element in row:
             if not element:
