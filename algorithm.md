@@ -174,13 +174,10 @@ This function takes a sudoku as argument and modify it to the solution, return `
 ### **Output**
 - `True` if the sudoku has solution, `False` otherwise 
 ### **Pseudocode**
-
-- call the funcion is_filled with sudoku as argument and save the result in filled
-- if filled is true then
--- call the funcion print_sudoku whit sudoku as the argument 
--- return true
-- get the target from get_the_next_target()
-- get the posibble numbers list to the target using possible_options() with the position and the sudoku as arguments
+1. If `is_filled(sudoku)`, return `True`
+1. Let `target = get_next_target(sudoku)`
+1. Let `options = get_options(sudoku, target)`
+1.
 -for each value in the posibble numbers as number repeat:
 -- set the sudoku on the target position to number
 -- call the function sudoku_solver giving the updated position of the board and save the result in result
