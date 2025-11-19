@@ -163,8 +163,7 @@ def solve_sudoku(sudoku):
 ## `_solve_sudoku(sudoku)`
 ### **Description**
 This function takes a sudoku as argument and modify it to the solution, return `True` if the sudoku has solution, `False` otherwise 
-[!WARNING]
-In order to work there have to be a list `record` that will receive the track of the solver
+[!WARNING]In order to work there have to be a list `record` that will receive the track of the solver
 [!PRECAUTION]
 This function shouldn't be use outside a foster function 
 ### **Arguments**
