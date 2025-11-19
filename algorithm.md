@@ -135,7 +135,17 @@ def print_sudoku(sudoku) -> None:
         print()
 ```
 
-sudoku_solver(sudoku)
+
+## `sudoku_solver(sudoku)`
+### **Description**
+This function takes a sudoku as input and return True or False if it have solution, the solution, and the record 
+### **Arguments**
+- Sudoku
+### **Output**
+- `True` if the sudoku has solution, `False` otherwise 
+- The last step the `sudoku` got( The solution if have)
+- A list with all the states the sudoku has been to get solve 
+### **Pseudocode**
 - call the funcion is_filled with sudoku as argument and save the result in filled
 - if filled is true then
 -- call the funcion print_sudoku whit sudoku as the argument 
