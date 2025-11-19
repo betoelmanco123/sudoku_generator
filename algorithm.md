@@ -19,7 +19,7 @@ This function takes a sudoku and a position and return all the possible numbers 
 
 ### **Arguments**
 - **Sudoku** : The board that its going to be used to check for every number its a matrix
-- **Position** : The position that its going to be cheacked, it has to be a tuple (x, y)
+- **Position** : The position that its going to be checked, it has to be a tuple (x, y)
 
 ### **Output**
 - **Options** A list that contains all the possible values the square can take
@@ -94,11 +94,16 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
 
 ## `is_filled(sudoku)`
 ### **Description**
-- for i=0 to 9 
--- for j = 0 to 9
---- if sudoku on the position (i, j) is different from None
----- return False
-- return true
+This function takes a sudoku as input and returns `False` if the sudoku have a `EMPTY` square, return `True` otherwise 
+### **Arguments**
+- Sudoku
+### **Output**
+- Boolean
+### **Pseudocode**
+1. For `row` from 0 to 9
+    - For `column` from 0 to 9
+        - If `sudoku[row][column] != None`, return `False`
+1. Return `True`
 
 
 print_sudoku(sudoku)
