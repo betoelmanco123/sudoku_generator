@@ -71,10 +71,8 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
        - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
         - if the `len` of `temp` is `1`, return `(row, column)`
---- if the len of temp is less than length
----- set length to len of temp 
----- set value to (i ,j)
--return value
+        - if the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `value` to `(row ,column)`
+1. return `value`
 
 
 is_filled(sudoku)
