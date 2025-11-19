@@ -127,6 +127,13 @@ This function takes a sudoku as input and print the sudoku in a readable way on 
         - Print `sudoku[row][column]`(without a line break) 
     - Print a line break
 ### **Implementation on python**
+``` python 
+def print_sudoku(sudoku) -> None:
+    for row in sudoku:
+        for element in row:
+            print(element, end="")
+        print()
+```
 
 sudoku_solver(sudoku)
 - call the funcion is_filled with sudoku as argument and save the result in filled
