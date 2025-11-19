@@ -66,12 +66,11 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
 ### **Pseudocode**
 1. Let `length = 10`
 1. Let `value = None`
-1. for `i` from `0 to 9`, do:
-    - For `j`from `0 to 9` do:
+1. for `row` from `0 to 9`, do:
+    - For `column`from `0 to 9` do:
        - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
---- if the len of temp == 1
-----return (i, j)
+        - if the `len` of `temp` is `1`, return `(row, column)`
 --- if the len of temp is less than length
 ---- set length to len of temp 
 ---- set value to (i ,j)
