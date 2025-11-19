@@ -162,11 +162,12 @@ def solve_sudoku(sudoku):
 ```
 ## `_solve_sudoku(sudoku)`
 ### **Description**
+> [!CAUTION]
+> This function shouldn't be use outside a father function
 This function takes a sudoku as argument and modify it to the solution, return `True` if the sudoku has solution, `False` otherwise 
 > [!WARNING]
 > In order to work there have to be a list `record` that will receive the track of the solver
-> [!CAUTION]
-> This function shouldn't be use outside a father function 
+ 
 ### **Arguments**
 - Sudoku
 ### **Output**
