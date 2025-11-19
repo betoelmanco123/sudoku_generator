@@ -114,12 +114,19 @@ def is_filled(sudoku) -> bool:
     return True
 ```
 
-print_sudoku(sudoku)
-- for i = 0 to 9 repeat
--- for j = 0 to 9 repeat
---- print sudoku on the position (i, j) 
--- print a line break
-
+## `print_sudoku(sudoku)`
+### **Description**
+This function takes a sudoku as input and print the sudoku in a readable way on the console 
+### **Arguments**
+- Sudoku
+### **Output**
+- No output
+### **Pseudocode**
+1. For `row` from 0 to 9, do:
+    - For `column` from 0 to 9, do:
+        - Print `sudoku[row][column]`(without a line break) 
+    - Print a line break
+### **Implementation on python**
 
 sudoku_solver(sudoku)
 - call the funcion is_filled with sudoku as argument and save the result in filled
