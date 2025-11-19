@@ -92,8 +92,8 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
     return best_option
 ```
 
-##`is_filled(sudoku)`
-###**Description**
+## `is_filled(sudoku)`
+### **Description**
 - for i=0 to 9 
 -- for j = 0 to 9
 --- if sudoku on the position (i, j) is different from None
