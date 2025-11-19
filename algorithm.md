@@ -148,7 +148,7 @@ This function takes a sudoku as input and return True or False if it have soluti
 ### **Pseudocode**
 1. Let `record = list()`
 1. Let `copy` be a copy of the given sudoku
-1. Let `result = _solve_sudoku(copy, record)`
+1. Let `result = _solve_sudoku(copy)`
 1. Return `result, copy, record`
 ### **Implementation on python**
 ``` python 
