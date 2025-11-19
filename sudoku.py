@@ -26,7 +26,7 @@ def is_filled(sudoku) -> bool:
 
 
 # print a sudoku in a readable way
-def print_sudoku(sudoku: list[list[int]]) -> None:
+def print_sudoku(sudoku) -> None:
     for row in sudoku:
         for element in row:
             print(element, end="")
