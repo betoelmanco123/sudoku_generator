@@ -3,19 +3,6 @@ import time, random
 EMPTY = None
 
 
-# SUDOKU = [
-#     [EMPTY, EMPTY, EMPTY, 4, EMPTY, 8, 5, EMPTY, EMPTY],
-#     [EMPTY, EMPTY, EMPTY, EMPTY, 6, EMPTY, 2, 4, EMPTY],
-#     [3, 4, EMPTY, EMPTY, EMPTY, 9, EMPTY, EMPTY, EMPTY],
-#     [EMPTY, EMPTY, EMPTY, 1, EMPTY, EMPTY, EMPTY, EMPTY, 7],
-#     [EMPTY, 5, 4, EMPTY, EMPTY, EMPTY, 3, 2, EMPTY],
-#     [6, EMPTY, EMPTY, EMPTY, EMPTY, 2, EMPTY, EMPTY, EMPTY],
-#     [EMPTY, EMPTY, EMPTY, 6, EMPTY, EMPTY, EMPTY, 9, 8],
-#     [EMPTY, 1, 8, EMPTY, 7, EMPTY, EMPTY, EMPTY, EMPTY],
-#     [EMPTY, EMPTY, 3, 8, EMPTY, 1, EMPTY, EMPTY, EMPTY],
-# ]
-
-
 # check if a sudoku its all filled with numbers
 def is_filled(sudoku) -> bool:
     for row in sudoku:
@@ -53,9 +40,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
 
 
 # returns all the posibles values for a given position on a given board
-def get_options(
-    sudoku: list[list[int]], position: tuple[int, int]
-) -> list[int]:
+def get_options(sudoku: list[list[int]], position: tuple[int, int]) -> list[int]:
     x, y = position
     values = {1, 2, 3, 4, 5, 6, 7, 8, 9}
     for aux in range(len(sudoku)):
@@ -71,8 +56,7 @@ def get_options(
     return list(values)
 
 
-def get_range( position: tuple[int, int]
-) -> list[int]:
+def get_range(position: tuple[int, int]) -> list[int]:
     x, y = position
     sudoku_range = set()
     for aux in range(9):
@@ -83,8 +67,9 @@ def get_range( position: tuple[int, int]
 
     for row in range(a, a + 3):
         for column in range(b, b + 3):
-                sudoku_range.add((row, column))
+            sudoku_range.add((row, column))
     return sudoku_range
+
 
 def get_same_number(position, sudoku):
     x, y = position
@@ -95,15 +80,11 @@ def get_same_number(position, sudoku):
             if i != x and j != y and sudoku[i][j] == value:
                 everything.append((i, j))
     return everything
-                 
-                
-
-# a function whose purpouse in life is help other function
 
 
 # a function that returns the number of squares that are
 # empty in a given sudoku
-def count_filled(sudoku):
+def count_used_squares(sudoku):
     counter = 0
     for row in range(len(sudoku)):
         for column in range(len(sudoku)):
@@ -114,28 +95,13 @@ def count_filled(sudoku):
 
 # a functions that for a given sudoku returns True if
 # it has solution or False if not
-def has_solution(sudoku1):
-    # base case
-    sudoku = [row[:] for row in sudoku1]
-    if is_filled(sudoku):
-        return True
-    # get the target
-    target = get_next_target(sudoku)
-    x, y = target
-    # get the avaiable options
-    options = get_options(sudoku, target)
-    # iterate over every option
-    for k in options:
-        sudoku[x][y] = k
-        if has_solution(sudoku):
-            return True
-    sudoku[x][y] = EMPTY
-    return False
+
 
 def has_unique_solution(sudoku):
     # Contador de soluciones
     solutions = 0
     sudoku1 = [row[:] for row in sudoku]
+
     def backtrack(sudoku_2):
         sudoku = [row[:] for row in sudoku_2]
         nonlocal solutions
@@ -166,38 +132,32 @@ def has_unique_solution(sudoku):
 
     return solutions == 1
 
-# return the position of a empty square from a given sudoku (random)
-def get_next_target_random(sudoku):
+
+def get_best_target_random(sudoku, predicate):
     length = 10
     options = list()
-    for i in range(len(sudoku)):
-        for j in range(len(sudoku)):
-            if not sudoku[i][j]:
+    for i in range(9):
+        for j in range(9):
+            if predicate(sudoku[i][j]):
                 values = get_options(sudoku, (i, j))
                 if len(values) < length:
                     length = len(values)
                     options = [(i, j)]
                 elif len(values) == length:
                     options.append((i, j))
-    value = random.choice(options)
-    return value
+    return random.choice(options)
+
+
+# return the position of a empty square from a given sudoku (random)
+def get_next_target_random(sudoku):
+
+    return get_best_target_random(sudoku, lambda v: not v)
 
 
 # return the position of a filled square from a given sudoku (random)
 def get_next_target_filled_random(sudoku):
-    length = 10
-    options = list()
-    for i in range(len(sudoku)):
-        for j in range(len(sudoku)):
-            if sudoku[i][j]:
-                values = get_options(sudoku, (i, j))
-                if len(values) < length:
-                    length = len(values)
-                    options = [(i, j)]
-                elif len(values) == length:
-                    options.append((i, j))
-    value = random.choice(options)
-    return value
+
+    return get_best_target_random(sudoku, lambda v: bool(v))
 
 
 def generate_sudoku_filled():
@@ -237,12 +197,12 @@ def get_playable_sudoku(level):
     sudoku = generate_sudoku_filled()
 
     def take_off_squares(sudoku1, level):
-        
+
         current = levels[level]
-        #base case
-        if count_filled(sudoku1) < current:
+        # base case
+        if count_used_squares(sudoku1) < current:
             return True
-        #target
+        # target
         target = get_next_target_filled_random(sudoku1)
         x, y = target
 
@@ -262,34 +222,38 @@ def get_playable_sudoku(level):
     return sudoku
 
 
+
+def _solve_sudoku(sudoku, record=None):
+    # base case
+    if is_filled(sudoku):
+        if record:
+            record.append([row[:] for row in sudoku])
+        return True
+    x, y = get_next_target(sudoku)
+    options = get_options(sudoku, (x, y))
+    for number in options:
+        # set the option in the sudoku
+        sudoku[x][y] = number
+        # save the step to the record
+        if record is not None:
+            record.append([row[:] for row in sudoku])
+        if _solve_sudoku(sudoku, record):
+            return True
+    # the backtrack step
+    sudoku[x][y] = EMPTY
+
+    return False
+
+def has_solution(sudoku1):
+    sudoku = [row[:] for row in sudoku1]
+    return solve_sudoku(sudoku)
+
 def solve_sudoku(sudoku):
     # the record of the moves
     record = []
-
-    # the backtracking function lsadjfñlasjdf
-    def _solve_sudoku(sudoku):
-        # base case
-        if is_filled(sudoku):
-            record.append([row[:] for row in sudoku])
-            return True
-        x, y = get_next_target(sudoku)
-        options = get_options(sudoku, (x, y))
-        for number in options:
-            # set the option in the sudoku
-            sudoku[x][y] = number
-            # save the step to the record
-            record.append([row[:] for row in sudoku])
-            if _solve_sudoku(sudoku):
-                return True
-        # the backtrack step
-        sudoku[x][y] = EMPTY
-
-        return False
-
     copy = [row[:] for row in sudoku]
-    result = _solve_sudoku(copy)
+    result = _solve_sudoku(copy, record)
     return result, copy, record
-
 
 def main():
     start = time.time()
@@ -300,7 +264,6 @@ def main():
     print_sudoku(solution)
     finish = time.time()
     print(finish - start)
-
 
 
 if __name__ == "__main__":

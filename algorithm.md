@@ -134,32 +134,6 @@ def print_sudoku(sudoku) -> None:
             print(element, end="")
         print()
 ```
-
-
-## `sudoku_solver(sudoku)`
-### **Description**
-This function takes a sudoku as input and return True or False if it have solution, the solution, and the record 
-### **Arguments**
-- Sudoku
-### **Output**
-- `True` if the sudoku has solution, `False` otherwise 
-- The last step the `sudoku` got( The solution if have)
-- A list with all the states the sudoku has been to get solve 
-### **Pseudocode**
-1. Let `record = list()`
-1. Let `copy` be a copy of the given sudoku
-1. Let `result = _solve_sudoku(copy)`
-1. Return `result, copy, record`
-### **Implementation on python**
-``` python 
-def solve_sudoku(sudoku):
-    record = []
-    #create a copy of the given sudoku
-    copy = [row[:] for row in sudoku]
-
-    result = _solve_sudoku(copy)
-    return result, copy, record
-```
 ## `_solve_sudoku(sudoku)`
 ### **Description**
 > [!CAUTION]
@@ -199,12 +173,53 @@ def _solve_sudoku(sudoku):
     return False
 ```
 
-count_not_empty(sudoku)
-- create a variable named count and set it value to 0
-- for i = 0 to 9 repeat
--- for j = 0 to 9 repeat
---- if sudoku on position (i, j) is different to None
----- update the value of cout by adding one
-- return count
 
+## `sudoku_solver(sudoku)`
+### **Description**
+This function takes a sudoku as input and return True or False if it have solution, the solution, and the record 
+### **Arguments**
+- Sudoku
+### **Output**
+- `True` if the sudoku has solution, `False` otherwise 
+- The last step the `sudoku` got( The solution if have)
+- A list with all the states the sudoku has been to get solve 
+### **Pseudocode**
+1. Let `record = list()`
+1. Let `copy` be a copy of the given sudoku
+1. Let `result = _solve_sudoku(copy)`
+1. Return `result, copy, record`
+### **Implementation on python**
+``` python 
+def solve_sudoku(sudoku):
+    record = []
+    #create a copy of the given sudoku
+    copy = [row[:] for row in sudoku]
+
+    result = _solve_sudoku(copy)
+    return result, copy, record
+```
+
+## `count_used_squares(sudoku)`
+### **Description**
+This function takes a sudoku as input and returns the number of squares that have a number.
+### **Arguments**
+- Sudoku
+### **Output**
+- A integer that  represents the number of squares that have a number
+### **Pseudocode**
+1. Let `count = 0`
+1. For `row` from 0 to 9, do:
+    - For `column` from 0 to 9, do:
+        - If `sudoku[row][column] != None`, then `count += 1`
+1. Return `count`
+### **Implementation on python**
+```python 
+def count_used_squares(sudoku):
+    counter = 0
+    for row in range(len(sudoku)):
+        for column in range(len(sudoku)):
+            if sudoku[row][column]:
+                counter += 1
+    return counter
+```
 
