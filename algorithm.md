@@ -160,6 +160,19 @@ def solve_sudoku(sudoku):
     result = _solve_sudoku(copy)
     return result, copy, record
 ```
+## `_solve_sudoku(sudoku)`
+### **Description**
+This function takes a sudoku as argument and modify it to the solution, return `True` if the sudoku has solution, `False` otherwise 
+[!WARNING]
+In order to work there have to be a list `record` that will receive the track of the solver
+[!PRECAUTION]
+This function shouldn't be use outside a foster function 
+### **Arguments**
+- Sudoku
+### **Output**
+- `True` if the sudoku has solution, `False` otherwise 
+### **Pseudocode**
+
 - call the funcion is_filled with sudoku as argument and save the result in filled
 - if filled is true then
 -- call the funcion print_sudoku whit sudoku as the argument 
