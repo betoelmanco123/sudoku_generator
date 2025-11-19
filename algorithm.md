@@ -68,6 +68,7 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
 1. Let `value = None`
 1. for `i` from `0 to 9`, do:
     - For `j`from `0 to 9` do:
+Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         - get the avaiable numbers for the positon i, j on the sudoku by calling the funcion possible_options() and save in temp
 --- if the len of temp == 1
 ----return (i, j)
