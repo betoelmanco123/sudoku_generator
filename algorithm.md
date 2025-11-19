@@ -70,9 +70,11 @@ This function takes a board of sudoku and returns the position a `EMPTY` square
     - For `column`from `0 to 9` do:
        - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
-        - if the `len` of `temp` is `1`, return `(row, column)`
-        - if the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `value` to `(row ,column)`
-1. return `value`
+        - If the `len` of `temp` is `1`, return `(row, column)`
+        - If the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `value` to `(row ,column)`
+1. Return `value`
+
+## ** Implementation on python**
 
 
 is_filled(sudoku)
