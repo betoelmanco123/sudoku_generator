@@ -148,9 +148,18 @@ This function takes a sudoku as input and return True or False if it have soluti
 ### **Pseudocode**
 1. Let `record = list()`
 1. Let `copy` be a copy of the given sudoku
-1. Let `result = _solve_backtrack(copy, record)`
+1. Let `result = _solve_sudoku(copy, record)`
 1. Return `result, copy, record`
+### **Implementation on python**
+``` python 
+def solve_sudoku(sudoku):
+    record = []
+    #create a copy of the given sudoku
+    copy = [row[:] for row in sudoku]
 
+    result = _solve_sudoku(copy)
+    return result, copy, record
+```
 - call the funcion is_filled with sudoku as argument and save the result in filled
 - if filled is true then
 -- call the funcion print_sudoku whit sudoku as the argument 
