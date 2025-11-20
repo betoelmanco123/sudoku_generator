@@ -137,8 +137,8 @@ def print_sudoku(sudoku) -> None:
 ## `_solve_sudoku(sudoku, record=None)`
 ### **Description**
 This function solve a given sudoku and can store all the steps that it take to solve in a list named record, return `True` if the sudoku has solution, `False` otherwise 
-[!IMPORTANT]
-> This function does *modify* the original sudoku
+> [!IMPORTANT]
+> This function does *modify* the original sudoku.
  
 ### **Arguments**
 - Sudoku
@@ -177,8 +177,8 @@ def _solve_sudoku(sudoku):
 ## `sudoku_solver(sudoku)`
 ### **Description**
 This function takes a sudoku as input and return True or False if it have solution, the solution, and the record 
-[!IMPORTANT]
-> This function does not modify the original sudoku
+> [!IMPORTANT]
+> This function does not modify the original sudoku.
 ### **Arguments**
 - Sudoku
 ### **Output**
@@ -204,8 +204,8 @@ def solve_sudoku(sudoku):
 ## `has_solution(sudoku)`
 ### **Description**
 This function takes a sudoku as input and return `True`if it has solution, return `False` otherwise
-[!IMPORTANT]
-> This function does not modify the original sudoku
+> [!IMPORTANT]
+> This function does not modify the original sudoku.
 ## `count_used_squares(sudoku)`
 ### **Description**
 This function takes a sudoku as input and returns the number of squares that have a number.
