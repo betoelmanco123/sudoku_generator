@@ -284,7 +284,7 @@ def random_best_target(sudoku, predicate):
                     options.append((row, column))
     return random.choice(options)
 ```
-## `generate_filled_sudoku(sudoku, record=None)``
+## `_generate_filled_sudoku(sudoku, record=None)``
 ### **Description**
 1. This function takes a empty board of sudoku to convert it to a completly filled one and returns `True`
 ### **Arguments**
@@ -332,4 +332,84 @@ def _generate_filled_sudoku(sudoku, record=None):
     return False
 ```
 
+## **`generate_filled_sudoku()`
+### **Description**
+This function returns a sudoku solved
+### **Arguments**
+- None
+### **Output**
+- Returns a sudoku solved
+### **Pseudocode**
+1. Let `void`be a sudoku completly `EMPTY`
+1. Execute `_generate_filled_sudoku(void)`
+1. Return `void`
+### **Implementation on python**
+``` python
+def generate_sudoku_filled():
+    void = [[EMPTY for _ in range(9)] for _ in range(9)]
+    _generate_filled_sudoku(void)
+    return void
+```
+## `take_off_squares(sudoku, level)`
+### **Description**
+This function takes a sudoku and removes numbers until has less than the `level`
+### **Arguments**
+- Sudoku
+- Level, `int` 
+### **Output**
+- `True``
+### **Pseudocode**
+1. If `count_used_squares(sudoku) < level`, do:
+    - Return `True`
+1. Let `row, column = random_best_target(sudoku)`
+1. Let `save = sudoku[row][column]`
+1. Set `sudoku[row][column] = EMPTY`
+1. For _ from `0` to `len(options)` , do:
+1. If `has_solution(sudoku)`, If `take_off_squares(sudoku, level)`, `return True`
+1. Set `sudoku[row][column] = save`
+1. Return `False`
+### **Implementation on python**
+```python
+def take_off_squares(sudoku1, current):
 
+    if count_used_squares(sudoku1) < current:
+        return True
+
+    target = random_best_target(sudoku1, lambda v: bool(v))
+    row, column = target
+
+    save = sudoku1[row][column]
+
+    sudoku1[row][column] = EMPTY
+    if has_solution(sudoku1):
+        if take_off_squares(sudoku1, current):
+            return True
+
+    sudoku1[row][column] = save
+    return False
+```
+
+## `get_playable_sudoku(level)``
+### **Description**
+This function creates a new sudoku ready to play based on the level.
+### **Arguments**
+- Level
+### **Output**
+- Sudoku ready to be used
+### **Pseudocode**
+1. Let `levels = [40, 35, 27]`
+1. Let `current = levels[level]`
+1. Let `sudoku = generate_filled_sudoku()`
+1. `take_off_squares(sudoku, current)`
+1. Return `sudoku`
+### **Implementation on python**
+``` python
+def get_playable_sudoku(level):
+
+    levels = [40, 35, 27]
+    current = levels[level]
+    sudoku = generate_filled_sudoku()
+    take_off_squares(sudoku, current)
+
+    return sudoku
+```

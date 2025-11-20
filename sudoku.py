@@ -190,7 +190,7 @@ def _generate_filled_sudoku(sudoku, record=None):
         if record is not None:
             record.append(sudoku)
         return True
-    row, column= random_best_target(sudoku, lambda v: not v)
+    row, column = random_best_target(sudoku, lambda v: not v)
     options = get_options(sudoku, (row, column))
     copy = options[:]
     for _ in range(len(options)):
@@ -204,43 +204,46 @@ def _generate_filled_sudoku(sudoku, record=None):
     sudoku[row][column] = EMPTY
     return False
 
-def generate_sudoku_filled():
+
+def generate_filled_sudoku():
+    """
+    This function returns a sudoku solved
+    """
     void = [[EMPTY for _ in range(9)] for _ in range(9)]
     _generate_filled_sudoku(void)
     return void
 
+def take_off_squares(sudoku1, current):
+    """
+    This function takes a sudoku and removes numbers until has less than the `level`
+    """
+    if count_used_squares(sudoku1) < current:
+        return True
+
+    target = random_best_target(sudoku1, lambda v: bool(v))
+    row, column = target
+
+    save = sudoku1[row][column]
+
+    sudoku1[row][column] = EMPTY
+    if has_solution(sudoku1):
+        if take_off_squares(sudoku1, current):
+            return True
+
+    sudoku1[row][column] = save
+    return False
+
 def get_playable_sudoku(level):
 
     levels = [40, 35, 27]
-    sudoku = generate_sudoku_filled()
-
-    def take_off_squares(sudoku1, level):
-
-        current = levels[level]
-        # base case
-        if count_used_squares(sudoku1) < current:
-            return True
-        # target
-        target = random_best_target(sudoku1, lambda v: bool(v))
-        x, y = target
-
-        save = sudoku1[x][y]
-
-        sudoku1[x][y] = EMPTY
-        if has_solution(sudoku1):
-            if take_off_squares(sudoku1, level):
-                return True
-
-        sudoku1[x][y] = save
-        print("get")
-        return False
-
-    take_off_squares(sudoku, level)
+    current = levels[level]
+    sudoku = generate_filled_sudoku()
+    take_off_squares(sudoku, current)
 
     return sudoku
 
 
-# --------------------pygame---------------------------
+# |--------------------pygame---------------------------|
 def get_range(position: tuple[int, int]) -> list[int]:
     x, y = position
     sudoku_range = set()
