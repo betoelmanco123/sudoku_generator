@@ -28,11 +28,9 @@ pygame.display.set_caption("Sudoku")
 running = True
 
 
-
 def draw_button(rect, font):
     pygame.draw.rect(screen, button_color, rect)
     screen.blit(font, (rect.x + 15, rect.y + 5))
-    
 
 
 # fuente
@@ -73,8 +71,6 @@ for i in range(3):
         rect_temp = pygame.Rect(875 + 90 * j, 365 + 90 * i, 70, 70)
         value_temp = font.render(str(j + 1 + i * 3), True, BTN_FONT_COLOR)
         buttons.append((rect_temp, value_temp, j + 1 + i * 3))
-
-
 
 
 # difficulty
@@ -121,7 +117,7 @@ selected_overlay = None
 overlay = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay_relatives = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay.fill((85, 159, 235, 50))  # R, G, B, A  → A = transparencia (0-255)
-overlay_relatives.fill((59,111,164, 50))  # R, G, B, A  → A = transparencia (0-255)
+overlay_relatives.fill((59, 111, 164, 50))  # R, G, B, A  → A = transparencia (0-255)
 # current
 current_overlay = None
 level = 1
@@ -147,7 +143,7 @@ while running:
                         states[0][y][x] = None
                     else:
                         states[0][y][x] = selected
-                    if  states[0][y][x] != solved[y][x]:
+                    if states[0][y][x] != solved[y][x]:
                         errors += 1
 
                 selected_overlay = list(get_range((y, x)))
@@ -157,7 +153,7 @@ while running:
                     relatives = get_same_number((y, x), states[0])
 
             elif generate_button.collidepoint(event.pos):
-                #factorizar
+                # factorizar
                 playing = True
                 relatives = None
                 minutes, errors = 0, 0
@@ -166,15 +162,15 @@ while running:
                 start_time = pygame.time.get_ticks()
                 selected_overlay = list()
             elif AI_button.collidepoint(event.pos):
-                
+
                 selected_overlay = list()
                 _, solution, record = solve_sudoku(states[0])
-                
+
                 if record:
                     states = record
-                    
+
             elif rect_easy.collidepoint(event.pos):
-                #factorizar
+                # factorizar
                 playing = True
                 relatives = None
                 minutes, errors, level = 0, 0, 0
@@ -183,7 +179,7 @@ while running:
                 start_time = pygame.time.get_ticks()
                 selected_overlay = list()
             elif rect_normal.collidepoint(event.pos):
-                #factoriaz
+                # factoriaz
                 level = 1
                 minutes, errors = 0, 0
                 playing = True
@@ -194,7 +190,7 @@ while running:
                 selected_overlay = list()
 
             elif rect_hard.collidepoint(event.pos):
-                #factorizar
+                # factorizar
                 level = 2
                 minues, errors = 0, 0
                 playing = True
@@ -303,9 +299,9 @@ while running:
         screen.blit(erase, (erase_button.x + 60, erase_button.y + 5))
     else:
         pygame.draw.rect(screen, timer_color, erase_button)
-        erase1 = font.render("Eraser", True, (255,255,255))
+        erase1 = font.render("Eraser", True, (255, 255, 255))
         screen.blit(erase1, (erase_button.x + 60, erase_button.y + 5))
-        
+
     mistakes = little_font.render(f"Mistakes: {errors} / 3", True, (0, 0, 0))
     screen.blit(mistakes, (rect_mistake.x + (BOX_SIZE * 1.666) / 4, rect_mistake.y + 1))
 

@@ -206,9 +206,23 @@ def solve_sudoku(sudoku):
 This function takes a sudoku as input and return `True`if it has solution, return `False` otherwise
 > [!IMPORTANT]
 > This function does not modify the original sudoku.
+### **Arguments**
+- Sudoku
+### **Output**
+- Return `True` it the sudoku has solution, `False`otherwise
+### **Pseudocode**
+1. Let `copy` be a copy of the sudoku
+1. Return `_solve_sudoku(copy)
+### **Implementation on python**
+```python 
+def has_solution(sudoku1):
+    sudoku = [row[:] for row in sudoku1]
+    return solve_sudoku(sudoku)
+```
+
 ## `count_used_squares(sudoku)`
 ### **Description**
-This function takes a sudoku as input and returns the number of squares that have a number.
+This function takes a sudoku as input and returns the number of squares that have a number on it.
 ### **Arguments**
 - Sudoku
 ### **Output**
@@ -229,4 +243,93 @@ def count_used_squares(sudoku):
                 counter += 1
     return counter
 ```
+
+## `random_best_target(sudoku)`
+### **Description**
+This function takes a sudoku, decide what are the best option to be ne next target and return one of them at random
+### **Arguments**
+- Sudoku
+- Predicate. Can accept one of two functions:
+    - `return True` if a given element exist (filled value)
+    - `return True` if a given element don't exist (empty value)
+
+### **Output**
+- A postion of the sudoku that is `EMPTY`
+### **Pseudocode**
+1. Let `length = 10`
+1. Let `best_options` be an empty `list`
+1. for `row` from `0 to 9`, do:
+    - For `column`from `0 to 9` do:
+       - If `predicate(sudoku[row][column])` then:
+           - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
+        
+            - If the `len` of `temp` is `1`, return `(row, column)`
+            - If the `len` of `temp` is `< length`, set `length` to `len` of `temp` and set `best_options` to a list that contains `(row ,column)`
+            - If the `len` of `temp` is equal to `length`, append `(row, column)` to `best_options`
+1. Let value be a random choosen element from `best_options`.
+1. Return `value`
+### **Implementation**
+```python
+def random_best_target(sudoku, predicate):
+    length = 10
+    options = list()
+    for row in range(9):
+        for column in range(9):
+            if predicate(sudoku[row][column]):
+                values = get_options(sudoku, (row, column))
+                if len(values) < length:
+                    length = len(values)
+                    options = [(row, column)]
+                elif len(values) == length:
+                    options.append((row, column))
+    return random.choice(options)
+```
+## `generate_filled_sudoku(sudoku, record=None)``
+### **Description**
+1. This function takes a empty board of sudoku to convert it to a completly filled one and returns `True`
+### **Arguments**
+- Sudoku
+- Record
+### **Output**
+- `True`
+### **Pseudocode**
+1. If `is_filled(sudoku)`, do:
+    - If `record`, append `sudoku` to `record`
+    - Return `True`
+1. Let `row, column = random_best_target(sudoku)`
+1. Let `options = get_options(sudoku, target)`
+1. Let `copy`be a copy of options.
+1. For _ from `0` to `len(options)` , do:
+    - Let `number`be a random choosen number from `copy`
+    - Set `sudoku[row][column] = number`
+    - Remove `number`from `copy` 
+    - If `record`, append `sudoku` to `record`
+    - If `generate_filled_sudoku(sudoku, record)`, return `True`
+- Set `sudoku[x][y] = None`
+- Return `False`
+### **Implementation on python**
+```python
+def _generate_filled_sudoku(sudoku, record=None):
+    """
+    This function takes a empty board of sudoku to convert it to a completly filled one and returns True
+    """
+    if is_filled(sudoku):
+        if record is not None:
+            record.append(sudoku)
+        return True
+    row, column= random_best_target(sudoku, lambda v: not v)
+    options = get_options(sudoku, (row, column))
+    copy = options[:]
+    for _ in range(len(options)):
+        if record is not None:
+            record.append(sudoku)
+        value = random.choice(copy)
+        copy.remove(value)
+        sudoku[row][column] = value
+        if _generate_filled_sudoku(sudoku, record):
+            return True
+    sudoku[row][column] = EMPTY
+    return False
+```
+
 

@@ -2,6 +2,7 @@ import time, random
 
 EMPTY = None
 
+
 def get_options(sudoku: list[list[int]], position: tuple[int, int]) -> list[int]:
     """
     This function takes a sudoku and a position and return all the possible numbers the square can take
@@ -43,10 +44,9 @@ def print_sudoku(sudoku) -> None:
         print()
 
 
-
 def get_next_target(sudoku: list[list[int]]) -> tuple:
     """
-    This function takes a board of sudoku and returns the position (x, y) of a EMPTY square 
+    This function takes a board of sudoku and returns the position (x, y) of a EMPTY square
     """
     length = 10
     best_option = None
@@ -68,7 +68,8 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
 # returns all the posibles values for a given position on a given board
 def _solve_sudoku(sudoku, record=None):
     """
-    This function takes a sudoku as argument and modify it to the solution, return `True` if the sudoku has solution, `False` otherwise 
+    This function takes a sudoku as argument and modify it to the solution,
+    return `True` if the sudoku has solution, `False` otherwise
     """
     # base case
     if is_filled(sudoku):
@@ -90,23 +91,31 @@ def _solve_sudoku(sudoku, record=None):
 
     return False
 
+
 def has_solution(sudoku1):
+    """
+    This function takes a sudoku as input and return `True`if it has solution, return `False` otherwise
+    This function does not modify the original sudoku.
+    """
     sudoku = [row[:] for row in sudoku1]
     return solve_sudoku(sudoku)
 
+
 def solve_sudoku(sudoku):
-    
+    """
+    This function takes a sudoku as input and return True or False if it have solution,
+    the solution, and the record of the steps takes to solve the sudoku
+    """
     record = []
     copy = [row[:] for row in sudoku]
     result = _solve_sudoku(copy, record)
     return result, copy, record
 
 
-
-
-# a function that returns the number of squares that are
-# empty in a given sudoku
 def count_used_squares(sudoku):
+    """
+    This function takes a sudoku as input and returns the number of squares that have a number on it.
+    """
     counter = 0
     for row in range(len(sudoku)):
         for column in range(len(sudoku)):
@@ -155,63 +164,50 @@ def has_unique_solution(sudoku):
     return solutions == 1
 
 
-def get_best_target_random(sudoku, predicate):
+def random_best_target(sudoku, predicate):
+    """
+    This function takes a sudoku, decide what are the best option to be ne next target and return one of them at random
+    """
     length = 10
     options = list()
-    for i in range(9):
-        for j in range(9):
-            if predicate(sudoku[i][j]):
-                values = get_options(sudoku, (i, j))
+    for row in range(9):
+        for column in range(9):
+            if predicate(sudoku[row][column]):
+                values = get_options(sudoku, (row, column))
                 if len(values) < length:
                     length = len(values)
-                    options = [(i, j)]
+                    options = [(row, column)]
                 elif len(values) == length:
-                    options.append((i, j))
+                    options.append((row, column))
     return random.choice(options)
 
 
-# return the position of a empty square from a given sudoku (random)
-def get_next_target_random(sudoku):
-
-    return get_best_target_random(sudoku, lambda v: not v)
-
-
-# return the position of a filled square from a given sudoku (random)
-def get_next_target_filled_random(sudoku):
-
-    return get_best_target_random(sudoku, lambda v: bool(v))
-
+def _generate_filled_sudoku(sudoku, record=None):
+    """
+    This function takes a empty board of sudoku to convert it to a completly filled one and returns True
+    """
+    if is_filled(sudoku):
+        if record is not None:
+            record.append(sudoku)
+        return True
+    row, column= random_best_target(sudoku, lambda v: not v)
+    options = get_options(sudoku, (row, column))
+    copy = options[:]
+    for _ in range(len(options)):
+        if record is not None:
+            record.append(sudoku)
+        value = random.choice(copy)
+        copy.remove(value)
+        sudoku[row][column] = value
+        if _generate_filled_sudoku(sudoku, record):
+            return True
+    sudoku[row][column] = EMPTY
+    return False
 
 def generate_sudoku_filled():
-
     void = [[EMPTY for _ in range(9)] for _ in range(9)]
-
-    def _generate_sudoku_filled(sudoku):
-
-        # base case
-        if is_filled(sudoku):
-            return True
-        # get the target
-        target = get_next_target_random(sudoku)
-        x, y = target
-        # get the avaiable options
-        options = get_options(sudoku, target)
-        # iterate over every option
-        copy = options[:]
-        for _ in range(len(options)):
-            value = random.choice(copy)
-            copy.remove(value)
-            sudoku[x][y] = value
-
-            if _generate_sudoku_filled(sudoku):
-                return True
-        sudoku[x][y] = EMPTY
-        return False
-
-    _generate_sudoku_filled(void)
-
+    _generate_filled_sudoku(void)
     return void
-
 
 def get_playable_sudoku(level):
 
@@ -225,7 +221,7 @@ def get_playable_sudoku(level):
         if count_used_squares(sudoku1) < current:
             return True
         # target
-        target = get_next_target_filled_random(sudoku1)
+        target = random_best_target(sudoku1, lambda v: bool(v))
         x, y = target
 
         save = sudoku1[x][y]
@@ -244,10 +240,7 @@ def get_playable_sudoku(level):
     return sudoku
 
 
-
-
-
-#--------------------pygame---------------------------
+# --------------------pygame---------------------------
 def get_range(position: tuple[int, int]) -> list[int]:
     x, y = position
     sudoku_range = set()
@@ -272,7 +265,6 @@ def get_same_number(position, sudoku):
             if i != x and j != y and sudoku[i][j] == value:
                 everything.append((i, j))
     return everything
-
 
 
 def main():
