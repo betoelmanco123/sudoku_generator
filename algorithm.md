@@ -58,7 +58,7 @@ def get_possible_options(sudoku: list[list] , position: tuple[int]) -> list[int]
 
 ## `get_the_next_target(sudoku)`
 ### **Description**
-This function takes a board of sudoku and returns the position of a `EMPTY` square 
+This function takes a board of sudoku and returns the position `(x, y)` of a `EMPTY` square.
 ### **Arguments**
 - Sudoku with `EMPTY`squares
 ### **Output**
@@ -94,7 +94,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
 
 ## `is_filled(sudoku)`
 ### **Description**
-This function takes a sudoku as input and returns `False` if the sudoku have a `EMPTY` square, return `True` otherwise 
+This function takes a sudoku as input and returns `False` if the sudoku have a `EMPTY` square, return `True` otherwise.
 ### **Arguments**
 - Sudoku
 ### **Output**
@@ -116,7 +116,7 @@ def is_filled(sudoku) -> bool:
 
 ## `print_sudoku(sudoku)`
 ### **Description**
-This function takes a sudoku as input and print the sudoku in a readable way on the console 
+This function takes a sudoku as input and print the sudoku in a readable way on the console.
 ### **Arguments**
 - Sudoku
 ### **Output**
@@ -134,26 +134,26 @@ def print_sudoku(sudoku) -> None:
             print(element, end="")
         print()
 ```
-## `_solve_sudoku(sudoku)`
+## `_solve_sudoku(sudoku, record=None)`
 ### **Description**
-> [!CAUTION]
-> This function shouldn't be use outside a father function.
-
-This function takes a sudoku as argument and modify it to the solution, return `True` if the sudoku has solution, `False` otherwise 
-> [!WARNING]
-> In order to work there have to be a list `record` that will receive the track of the solver.
+This function solve a given sudoku and can store all the steps that it take to solve in a list named record, return `True` if the sudoku has solution, `False` otherwise 
+[!IMPORTANT]
+> This function does *modify* the original sudoku
  
 ### **Arguments**
 - Sudoku
 ### **Output**
 - `True` if the sudoku has solution, `False` otherwise 
 ### **Pseudocode**
-1. If `is_filled(sudoku)`, return `True`
+1. If `is_filled(sudoku)`, do:
+    - If `record`, append `sudoku` to `record`
+    - Return `True`
 1. Let `x, y = get_next_target(sudoku)`
 1. Let `options = get_options(sudoku, target)`
 1. For `number in option`, do:
+    - If `record`, append `sudoku` to `record`
     - Set `sudoku[x][y] = number`
-    - If `_solve_sudoku(sudoku)`, return `True`
+    - If `_solve_sudoku(sudoku, record)`, return `True`
 - Set `sudoku[x][y] = None`
 - Return `False`
 ### **Implementation on python**
@@ -177,6 +177,8 @@ def _solve_sudoku(sudoku):
 ## `sudoku_solver(sudoku)`
 ### **Description**
 This function takes a sudoku as input and return True or False if it have solution, the solution, and the record 
+[!IMPORTANT]
+> This function does not modify the original sudoku
 ### **Arguments**
 - Sudoku
 ### **Output**
@@ -186,7 +188,7 @@ This function takes a sudoku as input and return True or False if it have soluti
 ### **Pseudocode**
 1. Let `record = list()`
 1. Let `copy` be a copy of the given sudoku
-1. Let `result = _solve_sudoku(copy)`
+1. Let `result = _solve_sudoku(copy, record)`
 1. Return `result, copy, record`
 ### **Implementation on python**
 ``` python 
@@ -199,6 +201,11 @@ def solve_sudoku(sudoku):
     return result, copy, record
 ```
 
+## `has_solution(sudoku)`
+### **Description**
+This function takes a sudoku as input and return `True`if it has solution, return `False` otherwise
+[!IMPORTANT]
+> This function does not modify the original sudoku
 ## `count_used_squares(sudoku)`
 ### **Description**
 This function takes a sudoku as input and returns the number of squares that have a number.
