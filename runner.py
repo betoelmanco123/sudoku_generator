@@ -2,10 +2,12 @@ import pygame, time
 
 from sudoku import (
     get_playable_sudoku,
+    _get_playable_sudoku,
     solve_sudoku,
     get_range,
     get_same_number,
     is_filled,
+    print_sudoku,
 )
 
 pygame.init()
@@ -157,8 +159,10 @@ while running:
                 playing = True
                 relatives = None
                 minutes, errors = 0, 0
-                states = [get_playable_sudoku(level)]
-                _, solved, _ = solve_sudoku(states[0])
+                _, record = _get_playable_sudoku(level)
+                if record:
+                    states = record
+                _, solved, _ = solve_sudoku(states[-1])
                 start_time = pygame.time.get_ticks()
                 selected_overlay = list()
             elif AI_button.collidepoint(event.pos):
@@ -212,11 +216,7 @@ while running:
                 if not changed:
                     selected = None
                     current_overlay = None
-    for i in range(3):
-        if i == level:
-            colors[i] = (199, 214, 232)
-        else:
-            colors[i] = button_color
+    
 
     # background
     pygame.draw.rect(screen, (255, 255, 255), background)
@@ -270,6 +270,7 @@ while running:
             LINE_WIDTH,
         )
         pygame.draw.rect(screen, BACKGROUND_LINE_COLOR_STRONG, line)
+
     current = states[0]
     for i in range(len(current)):
         for k in range(len(current)):
@@ -304,19 +305,26 @@ while running:
 
     mistakes = little_font.render(f"Mistakes: {errors} / 3", True, (0, 0, 0))
     screen.blit(mistakes, (rect_mistake.x + (BOX_SIZE * 1.666) / 4, rect_mistake.y + 1))
-
-    # difficulty
+    # select the current dificulty color
+    for i in range(3):
+        if i == level:
+            colors[i] = (199, 214, 232)
+        else:
+            colors[i] = button_color
+    # draw easy btn
     pygame.draw.rect(screen, colors[0], rect_easy)
     screen.blit(easy_text, (rect_easy.x + (BOX_SIZE * 1.666) / 4, rect_easy.y + 1))
 
+    # draw normal btn
     pygame.draw.rect(screen, colors[1], rect_normal)
     screen.blit(
         normal_text, (rect_normal.x + (BOX_SIZE * 1.666) / 4 - 20, rect_normal.y + 1)
     )
 
+    # draw hard btn
     pygame.draw.rect(screen, colors[2], rect_hard)
     screen.blit(hard_text, (rect_hard.x + (BOX_SIZE * 1.666) / 4, rect_hard.y + 1))
-
+    # draw the panel with the numbers
     for i in range(1, len(buttons) + 1):
         if i == selected:
             pygame.draw.rect(screen, timer_color, buttons[i - 1][0])
@@ -325,7 +333,7 @@ while running:
 
         else:
             draw_button(buttons[i - 1][0], buttons[i - 1][1])
-
+    # coloreate the selected numbers and their relatives
     if selected_overlay:
         for i in selected_overlay:
             x, y = i
@@ -346,9 +354,10 @@ while running:
             overlay,
             (y * BOX_SIZE + SUDOKU_Y_POSITION, SUDOKU_X_POSITION + x * BOX_SIZE),
         )
-    clock.tick(60)
     if len(states) > 1:
+        
         states.pop(0)
+
 
     if errors >= 3:
         playing = False
@@ -358,4 +367,5 @@ while running:
         playing = False
         result = "Solved"
 
+    clock.tick(60)
     pygame.display.update()
