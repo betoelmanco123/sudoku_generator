@@ -1,4 +1,4 @@
-import pygame
+import pygame, time
 
 from sudoku import (
     get_playable_sudoku,
@@ -316,7 +316,6 @@ while running:
                     selected_number = None
                     current_overlay = None
 
-
     # time
     seconds = (pygame.time.get_ticks() - start_time) / 1000
 
@@ -511,6 +510,7 @@ while running:
     # if the len of states is higher than one then
     # is in animation mode so we need to eliminate the current frame
     if len(states) > 1:
+
         states.pop(0)
 
     # if the user reach 3 mistakes, then the playing mode stop

@@ -4,8 +4,48 @@ This document describes the implementation of a Sudoku generator.
 It explains how the data is handled and provides detailed descriptions of each function in the system.
 All explanations are presented in both pseudocode and Python.
 
+## **Introduction**
+### Formal definition of sudoku
+> **“A Sudoku puzzle is represented by a 9×9 grid, which comprises nine 3×3 sub-grids (also called boxes). Some of the entries in the grid are filled with numbers from 1 to 9, whereas other entries are left blank.”**  
+> *(Lynce & Ouaknine, 2006, p. 1)*
+
+A sudoku is a matrix 9x9 that have 9 sub-matrices (boxes), this matrix to be a valid sudoku need to meet the next requirements:
+- There can only be one number in each square.
+- There has to be all the numbers from 1 to 9 (Inclusive) in every row, column and box.
+- Can only exist one solution to a given sudoku .
+
+### **How to solve a sudoku**
+There are a lot of tecniches to solve a sudoku for a human, such as:
+- Single candidat
+- Single position
+- Pointing pairs
+- Box line reduction
+
+However for a machine solve a sudoku its pretty different (at least this aproach), we could use brute force but its theres actually a lot of different position to calculate, so insted of just brute force a more efficent method named **backtracking** is used instead.
+
+### **Backtracking**
+> **“Backtracking is a depth–first search method that tries possible choices one at a time and abandons them (“backtracks”) as soon as it is determined that they cannot lead to a valid solution.”**.        
+> — Knuth, 2000, p. 4
+
+The **bactracking** is a useful tool when it comes to solve sudoku, we can aply it to try the numbers a *EMPTY* square can have and determinate whic one is correct, in order to achive that, the algorithm first need to coninue checking the posibilities on other *EMPTY* squares.
+This is an example of how it works:
+
+**Pseudocode**
+1. If the *base case*  is met, return `True`
+1. Get the next target
+1. Get the options the algorithm have
+1. Set the initial state to the first option on the target
+1. Recall the function with the updated sate
+1. If the recall return True, return `True` 
+1. Discard the option and return to step 4 if still options, else
+1. Reset the current state to the initial state and return `False`
+This algorithm is used to **Solve sudokus** and is implemented with the function
 ## **Functions description**
+[_solve_sudoku](#solve_sudokusudoku-recordnone)
+
 This sections present a detailed explanation of each function used on this implementation.
+
+
 Each function present:
 1. Description
 1. Input requieried

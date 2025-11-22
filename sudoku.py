@@ -270,7 +270,7 @@ def get_playable_sudoku(level):
 def _get_playable_sudoku(level):
     """
     This function takes a level as input an returns a sudoku completly ready to be played
-    as well as a record with al the steps took to create this sudoku
+    as well as a record with all the steps it took to create this sudoku
     """
     # the levels a sudoku can have
     # easy -> 40
