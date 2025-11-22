@@ -1,7 +1,6 @@
-import time, random, icecream
+import time, random
 
 EMPTY = None
-
 
 def get_options(sudoku: list[list[int]], position: tuple[int, int]) -> list[int]:
     """
@@ -13,7 +12,7 @@ def get_options(sudoku: list[list[int]], position: tuple[int, int]) -> list[int]
     for aux in range(9):
         # discard all the values that are on the same row and column
         values -= {sudoku[aux][column], sudoku[row][aux]}
-    # determinite the left corner of the quadrant the position is on
+    # determinate the top-left corner of the quadrant the position is on
     a = (row // 3) * 3
     b = (column // 3) * 3
     # iterates over every element on the same quadrant
@@ -251,6 +250,9 @@ def take_off_squares(sudoku1, current, record=None):
 
 
 def get_playable_sudoku(level):
+    """
+    This function takes a level as input an returns a sudoku completly ready to be played
+    """
     # the levels a sudoku can have
     # easy -> 40
     # normal -> 40
@@ -266,9 +268,13 @@ def get_playable_sudoku(level):
 
 
 def _get_playable_sudoku(level):
+    """
+    This function takes a level as input an returns a sudoku completly ready to be played
+    as well as a record with al the steps took to create this sudoku
+    """
     # the levels a sudoku can have
     # easy -> 40
-    # normal -> 40
+    # normal -> 35
     # hard -> 27
     record = []
     levels = [40, 35, 27]
