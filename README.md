@@ -30,6 +30,7 @@ However for a machine solve a sudoku its pretty different (at least this aproach
 The **bactracking** is a useful tool when it comes to solve sudoku, we can aply it to try the numbers a *EMPTY* square can have and determinate whic one is correct, in order to achive that, the algorithm first need to coninue checking the posibilities on other *EMPTY* squares.
 This is an example of how it works:
 
+
 **Pseudocode**
 1. If the *base case*  is met, return `True`
 1. Get the next target
@@ -39,11 +40,17 @@ This is an example of how it works:
 1. If the recall return True, return `True` 
 1. Discard the option and return to step 4 if still options, else
 1. Reset the current state to the initial state and return `False`
-This algorithm is used to **Solve sudokus** and is implemented with the function
-## **Functions description**
-[_solve_sudoku](#solve_sudokusudoku-recordnone)
 
-This sections present a detailed explanation of each function used on this implementation.
+This algorithm is used to **Solve sudoku** and it can be implemented with the function [_solve_sudoku](#_solve_sudokusudoku-recordnone)
+### **How to generate a sudoku**
+Once its possible to solve a sudoku create a new one comes very simple. Since generating a sudoku its basiclly solving a completly **EMPTY** sudoku the aclaration that when choose with which option start, its importat to pick one randomly, also at the moment of choosing a target it has to be using the *heuristic* but adding a little of randomness. After getting a solve sudoku then start by removing a random square and checking to see if the sudoku still have a single solution if theres more than one solution undo the next step, repite this untill the sudoku is have less than 40 filled squares and more than 17. [implementation](#get_playable_sudokulevel).
+
+This is another aplication of the **backtracking** algorithm
+## **System Overview**
+## **Functions description**
+
+
+This sections present a detailed explanation of each function used to implement the algorithms presented before.
 
 
 Each function present:
@@ -52,6 +59,8 @@ Each function present:
 1. Output
 1. Pseudocode
 1. Python implementation.
+
+## **Sudoku Solver**
 ## `get_options(sudoku, position)`
 
 ### **Description**
@@ -59,36 +68,36 @@ This function takes a sudoku and a position and return all the possible numbers 
 
 ### **Arguments**
 - **Sudoku** : The board that its going to be used to check for every number its a matrix
-- **Position** : The position that its going to be checked, it has to be a tuple (x, y)
+- **Position** : The position that its going to be checked, it has to be a tuple (row, column)
 
 ### **Output**
 - **Options** A list that contains all the possible values the square can take
 
 ### **Pseudocode**
 
-1. Create a set `values` that contains the numbers from 1 to 9
-1. Let `(x, y)` be the given position
-2. For `i` from `0` to `9` do:
-    - if `sudoku[i][y]` is not `None`, remove `sudoku[i][y]`
-    - if `sudoku[x][i]` is not `None`, remove `sudoku[x][i]`
+1. Create a set `values` that contains the numbers from 1 to 8
+1. Let `(row, column)` be the given position
+2. For `aux` from `0` to `8` do:
+    - if `sudoku[aux][column]` is not `None`, remove `sudoku[aux][column]`
+    - if `sudoku[row][aux]` is not `None`, remove `sudoku[row][aux]`
 
-3. Let `a = (x // 3) * 3`
-4. Let `b = (y // 3) * 3`
+3. Let `a = (row // 3) * 3`
+4. Let `b = (column // 3) * 3`
 5. For `row` from `a` to `a + 3`, do:
     - For `column` from `b` to `b + 3` do:
         - If `sudoku[row][column]` is not `None`, remove `sudoku[row][column]` from values
 
 6. Return values converted to a list
 
-### **Implementation in python**
+### **Python implementation**
 ```python
 def get_possible_options(sudoku: list[list] , position: tuple[int]) -> list[int]:
-    x, y = position
+    row, column = position
     values = {k for k in range(1 ,9)}
     for aux in range(9):
-        values -= {sudoku[aux][y], sudoku[x][aux]}
-    a = (x // 3) * 3
-    b = (y // 3) * 3
+        values -= {sudoku[aux][column], sudoku[row][aux]}
+    a = (row // 3) * 3
+    b = (column // 3) * 3
     for row in range(a, a + 3):
         for column in range(b, b + 3):
             if sudoku[row][column]:
@@ -98,16 +107,16 @@ def get_possible_options(sudoku: list[list] , position: tuple[int]) -> list[int]
 
 ## `get_the_next_target(sudoku)`
 ### **Description**
-This function takes a board of sudoku and returns the position `(x, y)` of a `EMPTY` square.
+This function takes a board of sudoku and returns the position `(row, column)` of a `EMPTY` square.
 ### **Arguments**
 - Sudoku with `EMPTY`squares
 ### **Output**
-- Position in format (x, y)
+- Position in format (row, column)
 ### **Pseudocode**
 1. Let `length = 10`
 1. Let `best_option = None`
-1. for `row` from `0 to 9`, do:
-    - For `column`from `0 to 9` do:
+1. for `row` from `0 to 8`, do:
+    - For `column`from `0 to 8` do:
        - If `not sudoku[row][column]` then:
            - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
@@ -115,7 +124,7 @@ This function takes a board of sudoku and returns the position `(x, y)` of a `EM
             - If the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `best_option` to `(row ,column)`
 1. Return `value`
 
-## **Implementation on python**
+## **Python implementation**
 ```python
 def get_next_target(sudoku: list[list[int]]) -> tuple:
     length = 10
@@ -140,11 +149,11 @@ This function takes a sudoku as input and returns `False` if the sudoku have a `
 ### **Output**
 - Boolean
 ### **Pseudocode**
-1. For `row` from 0 to 9
-    - For `column` from 0 to 9
+1. For `row` from `0` to `8`
+    - For `column` from `0` to `8`
         - If `sudoku[row][column] != None`, return `False`
 1. Return `True`
-### **Implementation on python**
+### **Python implementation**
 ``` python 
 def is_filled(sudoku) -> bool:
     for row in sudoku:
@@ -162,11 +171,11 @@ This function takes a sudoku as input and print the sudoku in a readable way on 
 ### **Output**
 - No output
 ### **Pseudocode**
-1. For `row` from 0 to 9, do:
-    - For `column` from 0 to 9, do:
+1. For `row` from `0` to `8`, do:
+    - For `column` from `0` to `8`, do:
         - Print `sudoku[row][column]`(without a line break) 
     - Print a line break
-### **Implementation on python**
+### **Python implementation**
 ``` python 
 def print_sudoku(sudoku) -> None:
     for row in sudoku:
@@ -188,28 +197,28 @@ This function solve a given sudoku and can store all the steps that it take to s
 1. If `is_filled(sudoku)`, do:
     - If `record`, append `sudoku` to `record`
     - Return `True`
-1. Let `x, y = get_next_target(sudoku)`
+1. Let `row, column = get_next_target(sudoku)`
 1. Let `options = get_options(sudoku, target)`
 1. For `number in option`, do:
     - If `record`, append `sudoku` to `record`
-    - Set `sudoku[x][y] = number`
+    - Set `sudoku[row][column] = number`
     - If `_solve_sudoku(sudoku, record)`, return `True`
-- Set `sudoku[x][y] = None`
+- Set `sudoku[row][column] = None`
 - Return `False`
-### **Implementation on python**
+### **Python implementation**
 ```python
 def _solve_sudoku(sudoku):
     if is_filled(sudoku):
         record.append([row[:] for row in sudoku])
         return True
-    x, y = get_next_target(sudoku)
-    options = get_options(sudoku, (x, y))
+    row, column = get_next_target(sudoku)
+    options = get_options(sudoku, (row, column))
     for k in options:
-        sudoku[x][y] = k
+        sudoku[row][column] = k
         record.append([row[:] for row in sudoku])
         if _solve_sudoku(sudoku):
             return True
-    sudoku[x][y] = None
+    sudoku[row][column] = None
     return False
 ```
 
@@ -230,7 +239,7 @@ This function takes a sudoku as input and return True or False if it have soluti
 1. Let `copy` be a copy of the given sudoku
 1. Let `result = _solve_sudoku(copy, record)`
 1. Return `result, copy, record`
-### **Implementation on python**
+### **Python implementation**
 ``` python 
 def solve_sudoku(sudoku):
     record = []
@@ -240,7 +249,7 @@ def solve_sudoku(sudoku):
     result = _solve_sudoku(copy)
     return result, copy, record
 ```
-
+## **Sudoku Generator**
 ## `has_solution(sudoku)`
 ### **Description**
 This function takes a sudoku as input and return `True`if it has solution, return `False` otherwise
@@ -253,7 +262,7 @@ This function takes a sudoku as input and return `True`if it has solution, retur
 ### **Pseudocode**
 1. Let `copy` be a copy of the sudoku
 1. Return `_solve_sudoku(copy)
-### **Implementation on python**
+### **Python implementation**
 ```python 
 def has_solution(sudoku1):
     sudoku = [row[:] for row in sudoku1]
@@ -269,11 +278,11 @@ This function takes a sudoku as input and returns the number of squares that hav
 - A integer that  represents the number of squares that have a number
 ### **Pseudocode**
 1. Let `count = 0`
-1. For `row` from 0 to 9, do:
-    - For `column` from 0 to 9, do:
+1. For `row` from `0` to `8`, do:
+    - For `column` from `0` to `8`, do:
         - If `sudoku[row][column] != None`, then `count += 1`
 1. Return `count`
-### **Implementation on python**
+### **Python implementation**
 ```python 
 def count_used_squares(sudoku):
     counter = 0
@@ -298,8 +307,8 @@ This function takes a sudoku, decide what are the best option to be ne next targ
 ### **Pseudocode**
 1. Let `length = 10`
 1. Let `best_options` be an empty `list`
-1. for `row` from `0 to 9`, do:
-    - For `column`from `0 to 9` do:
+1. for `row` from `0 to 8`, do:
+    - For `column`from `0 to 8` do:
        - If `predicate(sudoku[row][column])` then:
            - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
         
@@ -308,7 +317,7 @@ This function takes a sudoku, decide what are the best option to be ne next targ
             - If the `len` of `temp` is equal to `length`, append `(row, column)` to `best_options`
 1. Let value be a random choosen element from `best_options`.
 1. Return `value`
-### **Implementation**
+### **Python implementation**
 ```python
 def random_best_target(sudoku, predicate):
     length = 10
@@ -324,7 +333,7 @@ def random_best_target(sudoku, predicate):
                     options.append((row, column))
     return random.choice(options)
 ```
-## `_generate_filled_sudoku(sudoku, record=None)``
+## `_generate_filled_sudoku(sudoku, record=None)`
 ### **Description**
 1. This function takes a empty board of sudoku to convert it to a completly filled one and returns `True`
 ### **Arguments**
@@ -347,7 +356,7 @@ def random_best_target(sudoku, predicate):
     - If `generate_filled_sudoku(sudoku, record)`, return `True`
 - Set `sudoku[x][y] = None`
 - Return `False`
-### **Implementation on python**
+### **Python implementation**
 ```python
 def _generate_filled_sudoku(sudoku, record=None):
     """
@@ -383,7 +392,7 @@ This function returns a sudoku solved
 1. Let `void`be a sudoku completly `EMPTY`
 1. Execute `_generate_filled_sudoku(void)`
 1. Return `void`
-### **Implementation on python**
+### **Python implementation**
 ``` python
 def generate_sudoku_filled():
     void = [[EMPTY for _ in range(9)] for _ in range(9)]
@@ -397,7 +406,7 @@ This function takes a sudoku and removes numbers until has less than the `level`
 - Sudoku
 - Level, `int` 
 ### **Output**
-- `True``
+- `True`
 ### **Pseudocode**
 1. If `count_used_squares(sudoku) < level`, do:
     - Return `True`
@@ -408,7 +417,7 @@ This function takes a sudoku and removes numbers until has less than the `level`
 1. If `has_solution(sudoku)`, If `take_off_squares(sudoku, level)`, `return True`
 1. Set `sudoku[row][column] = save`
 1. Return `False`
-### **Implementation on python**
+### **Python implementation**
 ```python
 def take_off_squares(sudoku1, current):
 
@@ -429,7 +438,7 @@ def take_off_squares(sudoku1, current):
     return False
 ```
 
-## `get_playable_sudoku(level)``
+## `get_playable_sudoku(level)`
 ### **Description**
 This function creates a new sudoku ready to play based on the level.
 ### **Arguments**
@@ -442,7 +451,7 @@ This function creates a new sudoku ready to play based on the level.
 1. Let `sudoku = generate_filled_sudoku()`
 1. `take_off_squares(sudoku, current)`
 1. Return `sudoku`
-### **Implementation on python**
+### **Python implementation**
 ``` python
 def get_playable_sudoku(level):
 

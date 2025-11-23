@@ -1,14 +1,8 @@
-import pygame, time
+import pygame
 
-from sudoku import (
-    get_playable_sudoku,
-    _get_playable_sudoku,
-    solve_sudoku,
-    get_range,
-    get_same_number,
-    is_filled,
-    print_sudoku,
-)
+from solver import solve_sudoku
+from generator import get_playable_sudoku, _get_playable_sudoku
+from utils import is_filled, get_range, get_same_number
 
 # initialize pygame idk
 pygame.init()
@@ -346,6 +340,24 @@ while running:
             colors[i] = (199, 214, 232)
         else:
             colors[i] = GRAY_BTN
+    # if the len of states is higher than one then
+    # is in animation mode so we need to eliminate the current frame
+    if len(states) > 1:
+
+        states.pop(0)
+
+    # if the user reach 3 mistakes, then the playing mode stop
+    if error_counter >= 3:
+        playing = False
+        # the text the clock shows
+        result = "Failed"
+
+    # if is there a sudoku being solve and theres only one element on
+    # states and the unique element theres on states is filled
+    # then the sudoku is solved xddd
+    if playing and len(states) == 1 and is_filled(states[0]):
+        playing = False
+        result = "Solved"
     # ---------------------------------- Draw -------------------------------
 
     # draw the background
@@ -506,25 +518,6 @@ while running:
             overlay,
             (column * BOX_SIZE + SUDOKU_Y_POSITION, SUDOKU_X_POSITION + row * BOX_SIZE),
         )
-
-    # if the len of states is higher than one then
-    # is in animation mode so we need to eliminate the current frame
-    if len(states) > 1:
-
-        states.pop(0)
-
-    # if the user reach 3 mistakes, then the playing mode stop
-    if error_counter >= 3:
-        playing = False
-        # the text the clock shows
-        result = "Failed"
-
-    # if is there a sudoku being solve and theres only one element on
-    # states and the unique element theres on states is filled
-    # then the sudoku is solved xddd
-    if playing and len(states) == 1 and is_filled(states[0]):
-        playing = False
-        result = "Solved"
 
     # im not sure what this does xdddd
     clock.tick(60)
