@@ -1,0 +1,23 @@
+# ---- PyInstaller ----
+build/
+dist/
+*.spec
+
+# ---- Archivos temporales de Python ----
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# ---- Virtual environments ----
+venv/
+env/
+
+# ---- macOS ----
+.DS_Store
+
+# ---- VSCode ----
+.vscode/
+
+# ---- Archivos de logs ----
+*.log
