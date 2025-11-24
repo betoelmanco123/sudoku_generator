@@ -230,7 +230,7 @@ This function takes a sudoku and a position and return all the possible numbers 
 
 ### **Python implementation**
 ```python
-def get_possible_options(sudoku: list[list] , position: tuple[int]) -> list[int]:
+def get_options(sudoku: list[list] , position: tuple[int]) -> list[int]:
     row, column = position
     values = {k for k in range(1 ,9)}
     for aux in range(9):
@@ -256,7 +256,7 @@ This function takes a board of sudoku and returns the position `(row, column)` o
 1. for `row` from `0 to 8`, do:
     - For `column`from `0 to 8` do:
        - If `not sudoku[row][column]` then:
-           - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
+           - Get the possibilities to `sudoku[row][column]` by `temp = get_options(sudoku, (row, column))`
         
             - If the `len` of `temp` is `1`, return `(row, column)`
             - If the `len` of `temp` is `< length`, then, set `length` to `len` of `temp` and set `best_option` to `(row ,column)`
@@ -270,7 +270,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
     for row in range(9):
         for column in range(9):
             if not sudoku[row][column]:
-                current = len(get_possible_options(sudoku, (row, column)))
+                current = len(get_options(sudoku, (row, column)))
                 if current == 1:
                     return (row, column)
                 if current < length:
@@ -390,7 +390,7 @@ This function takes a sudoku, decide what are the best option to be ne next targ
 1. for `row` from `0 to 8`, do:
     - For `column`from `0 to 8` do:
        - If `predicate(sudoku[row][column])` then:
-           - Get the possibilities to `sudoku[row][column]` by `temp = get_possible_options(sudoku, (row, column))`
+           - Get the possibilities to `sudoku[row][column]` by `temp = get_options(sudoku, (row, column))`
         
             - If the `len` of `temp` is `1`, return `(row, column)`
             - If the `len` of `temp` is `< length`, set `length` to `len` of `temp` and set `best_options` to a list that contains `(row ,column)`
