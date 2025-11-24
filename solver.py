@@ -3,8 +3,6 @@ from utils import is_filled
 EMPTY = None
 
 
-# print a sudoku in a readable way
-
 
 def get_options(sudoku: list[list[int]], position: tuple[int, int]) -> list[int]:
     """
@@ -41,6 +39,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
         for column in range(len(sudoku)):
             # only check for empty squares
             if not sudoku[row][column]:
+                # return (row,column) IN CASE YOU WANNA THE VISUAL WAY
                 # get the number of options the square has
                 current = len(get_options(sudoku, (row, column)))
                 # if a square can only have one number, then we inmediatly take it
@@ -98,13 +97,6 @@ def solve_sudoku(sudoku):
     copy = [row[:] for row in sudoku]
     result = _solve_sudoku(copy, record)
     return result, copy, record
-
-
-def main(): ...
-
-
-if __name__ == "__main__":
-    main()
 
 
 def has_unique_solution(sudoku):

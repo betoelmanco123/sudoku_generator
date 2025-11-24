@@ -63,6 +63,10 @@ Several helper functions operate on this data model:
 - `get_options(sudoku, position)`: returns all valid numbers that can be placed in a given empty cell without breaking Sudoku rules.
 - `get_next_target(sudoku)` and `random_best_target(sudoku, predicate)`: select the next cell to be processed, using a heuristic that prefers cells with fewer possible options.
 - `is_filled(sudoku)` and `count_used_squares(sudoku)`: check whether the board is complete and count how many cells are currently filled.
+
+`get_next_target(sudoku)` This function migth seem a little overcomplicated but it has it logic.
+ Instead of just return the first `EMPTY`square on the board it will look for the Most restictive one this is a technique called Most Significant Value and while increases the work for this function by looking for all possbile values on all EMPTY squares, it limitates the deep of the branches created making the program more efficent it also applies to the version of this functions that implements some randomness.
+
 ### Sudoku solver
 
 The solver is based on a **backtracking** algorithm:
@@ -110,7 +114,6 @@ The generator uses the same backtracking ideas to create new puzzles:
      - Returns the resulting partially filled board, ready to play.
 ## **Functions description**
 
-
 This sections present a detailed explanation of each function used to implement the algorithms presented before.
 
 
@@ -122,7 +125,7 @@ Each function present:
 1. Python implementation.
 
 ## **Util**
-### **Functions**
+### **Content**
 1. `count_used_squares(sudoku)`
 1. `is_filled(sudoku)`
 1. `print_sudoku(sudoku)`
@@ -194,7 +197,7 @@ def print_sudoku(sudoku) -> None:
 ## **Sudoku Solver**
 ### **Content**
 1. `get_options(sudoku, position)`
-1. `get_the_next_target(sudoku)`
+1. `get_next_target(sudoku)`
 1. `_solve_sudoku(sudoku, record=None)`
 1. `sudoku_solver(sudoku)`
 ## `get_options(sudoku, position)`
@@ -240,7 +243,7 @@ def get_possible_options(sudoku: list[list] , position: tuple[int]) -> list[int]
                 values -= {sudoku[row][column]}
     return list(values)
 ```
-## `get_the_next_target(sudoku)`
+## `get_next_target(sudoku)`
 ### **Description**
 This function takes a board of sudoku and returns the position `(row, column)` of a `EMPTY` square.
 ### **Arguments**
