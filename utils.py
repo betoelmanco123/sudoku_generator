@@ -1,4 +1,4 @@
-def count_used_squares(sudoku):
+def count_used_squares(sudoku) -> int:
     """
     This function takes a sudoku as input and returns the number of squares that have a number on it.
     """
@@ -40,6 +40,10 @@ def print_sudoku(sudoku) -> None:
 
 
 # |--------------------pygame---------------------------|
+"""
+Functions that whose only purpose in life is to help the pygame runner 
+dont need to be documented
+"""
 def get_range(position: tuple[int, int]) -> list[int]:
     row, column = position
     sudoku_range = set()
@@ -58,9 +62,9 @@ def get_range(position: tuple[int, int]) -> list[int]:
 def get_same_number(position, sudoku):
     row, column = position
     value = sudoku[row][column]
-    everything = list()
+    everything = set()
     for i in range(9):
         for j in range(9):
             if i != row and j != column and sudoku[i][j] == value:
-                everything.append((i, j))
+                everything.add((i, j))
     return everything

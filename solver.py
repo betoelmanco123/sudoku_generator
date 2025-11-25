@@ -54,7 +54,7 @@ def get_next_target(sudoku: list[list[int]]) -> tuple:
 
 
 # returns all the posibles values for a given position on a given board
-def _solve_sudoku(sudoku, record=None):
+def _solve_sudoku(sudoku, record=None) -> bool:
     """
     This function takes a sudoku as argument and modify it to the solution,
     return `True` if the sudoku has solution, `False` otherwise
@@ -86,7 +86,7 @@ def _solve_sudoku(sudoku, record=None):
     return False
 
 
-def solve_sudoku(sudoku):
+def solve_sudoku(sudoku ) -> list[list]:
     """
     This function takes a sudoku as input and return True or False if it have solution,
     the solution, and the record of the steps takes to solve the sudoku
@@ -99,7 +99,7 @@ def solve_sudoku(sudoku):
     return result, copy, record
 
 
-def has_unique_solution(sudoku):
+def has_unique_solution(sudoku) -> bool:
     # Contador de soluciones
     solutions = 0
     sudoku1 = [row[:] for row in sudoku]

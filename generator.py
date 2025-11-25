@@ -5,7 +5,7 @@ from solver import get_options, solve_sudoku
 EMPTY = None
 
 
-def random_best_target(sudoku, predicate):
+def random_best_target(sudoku, predicate) -> tuple[int]:
     """
     This function takes a sudoku, decide what are the best option to be ne next target and return one of them at random
     """
@@ -30,7 +30,7 @@ def random_best_target(sudoku, predicate):
     return random.choice(options)
 
 
-def _generate_filled_sudoku(sudoku, record=None):
+def _generate_filled_sudoku(sudoku, record=None) -> True:
     """
     This function takes a empty board of sudoku to convert it to a completly filled one and returns True
     """
@@ -65,9 +65,9 @@ def _generate_filled_sudoku(sudoku, record=None):
     return False
 
 
-def generate_filled_sudoku():
+def generate_filled_sudoku() -> list[list]:
     """
-    This function returns a sudoku solved
+    This function returns a solved sudoku
     """
     # create a EMPTY sudoku
     void = [[EMPTY for _ in range(9)] for _ in range(9)]
@@ -76,7 +76,7 @@ def generate_filled_sudoku():
     return void
 
 
-def has_solution(sudoku1):
+def has_solution(sudoku1) -> bool:
     """
     This function takes a sudoku as input and return `True`if it has solution, return `False` otherwise
     This function does not modify the original sudoku.
@@ -85,7 +85,7 @@ def has_solution(sudoku1):
     return solve_sudoku(sudoku)
 
 
-def take_off_squares(sudoku1, current, record=None):
+def take_off_squares(sudoku1, current, record=None) -> True:
     """
     This function takes a sudoku and removes numbers until has less than the `level`
     """
@@ -116,7 +116,7 @@ def take_off_squares(sudoku1, current, record=None):
     return False
 
 
-def get_playable_sudoku(level):
+def get_playable_sudoku(level) -> list[list]:
     """
     This function takes a level as input an returns a sudoku completly ready to be played
     """
@@ -134,7 +134,7 @@ def get_playable_sudoku(level):
     return sudoku
 
 
-def _get_playable_sudoku(level):
+def _get_playable_sudoku(level) -> list[list]:
     """
     This function takes a level as input an returns a sudoku completly ready to be played
     as well as a record with all the steps it took to create this sudoku

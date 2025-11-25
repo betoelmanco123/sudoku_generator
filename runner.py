@@ -13,10 +13,10 @@ EMPTY = None
 # screen and sudoku size
 WIDTH = 1200
 HEIGHT = 800
-SUDOKU_DIMENSION = 650
+SUDOKU_BOARD_DIMENSION = 650
 
 # size of each square of the sudoku
-BOX_SIZE = SUDOKU_DIMENSION / 9
+BOX_SIZE = SUDOKU_BOARD_DIMENSION / 9
 
 # blue for the font
 QUITE_BLUE = (59, 89, 169)
@@ -26,6 +26,7 @@ GRAY_BTN = (235, 238, 243)
 
 # button background (Blue)
 BLUE_BUTTON = (97, 122, 187)
+
 # top-left corner
 SUDOKU_X_POSITION = 100
 SUDOKU_Y_POSITION = 100
@@ -35,24 +36,29 @@ LINE_WIDTH = 2
 BACKGROUND_LINE_COLOR = (235, 237, 242)
 BACKGROUND_LINE_COLOR_STRONG = (102, 114, 132)
 
-# hardcoded xddd
-FONT_SIZE = SUDOKU_DIMENSION // 16
+# size for the font
+FONT_SIZE = SUDOKU_BOARD_DIMENSION // 16
 
 # initialice variables
 running = True
 playing = True
 result = None
 selected_number = None
+minutes = 0
+
+#the numbers that need to be colored sinces a relative hsa been selected
 colored_range = None
+
+# the numbers that already are solved on the board
+solved_numbers = set()
 
 # error counter
 error_counter = 0
 
 # start in normal difficulty
 level = 1
-minutes = 0
 
-# start without overlay
+# start without overlay on the board
 current_overlay = None
 relatives = None
 
@@ -73,7 +79,7 @@ def draw_button(rect, font):
 # main font
 font = pygame.font.SysFont("Comic Sans MS", FONT_SIZE)
 
-# a liittler one
+# a littler one
 little_font = pygame.font.SysFont("Comic Sans MS", int(FONT_SIZE // 1.5))
 
 
@@ -92,13 +98,13 @@ generate = font.render("Create", True, QUITE_BLUE)
 AI_button = pygame.Rect(875, 265, 250, 80)
 ai = font.render("Solve", True, QUITE_BLUE)
 
-# eraser
+# eraser button
 erase_button = pygame.Rect(875, 635, 250, 70)
 erase = font.render("Eraser", True, QUITE_BLUE)
 
 # mistakes counter
 rect_mistake = pygame.Rect(
-    SUDOKU_Y_POSITION + SUDOKU_DIMENSION - 210,
+    SUDOKU_Y_POSITION + SUDOKU_BOARD_DIMENSION - 210,
     SUDOKU_X_POSITION - BOX_SIZE / 2,
     BOX_SIZE * 1.666,
     BOX_SIZE / 2,
@@ -143,6 +149,7 @@ hard_text = little_font.render("Hard", True, QUITE_BLUE)
 # the states the board have (if have more than one then is an animation)
 states = [get_playable_sudoku(0)]
 
+# store the solution for the initial sudoku
 _, solved_state, _ = solve_sudoku(states[0])
 
 # clock stuff
@@ -160,17 +167,19 @@ overlay_relatives.fill((59, 111, 164, 50))
 while running:
     # event detector
     for event in pygame.event.get():
+        
         # stop the game with the red button xd
         if event.type == pygame.QUIT:
             running = False
+            
         # whenever the mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN:
             # position of the mouse when clicked
             mouse_x, mouse_y = event.pos
             # if the mouse was on the sudoku board and
             if (
-                SUDOKU_Y_POSITION < mouse_x < SUDOKU_DIMENSION + SUDOKU_Y_POSITION
-                and SUDOKU_X_POSITION < mouse_y < SUDOKU_DIMENSION + SUDOKU_X_POSITION
+                SUDOKU_Y_POSITION < mouse_x < SUDOKU_BOARD_DIMENSION + SUDOKU_Y_POSITION
+                and SUDOKU_X_POSITION < mouse_y < SUDOKU_BOARD_DIMENSION + SUDOKU_X_POSITION
                 and error_counter < 3
             ):
                 # deteminate the square positon the mouse was on
@@ -186,10 +195,18 @@ while running:
                     # when an actual number was selected
                     else:
                         states[0][column][row] = selected_number
+                        
+
 
                         # if the number is wrong, update the error counter
                         if states[0][column][row] != solved_state[column][row]:
                             error_counter += 1
+                        # if the number is correct check how many times the number is on the sudoku
+                        # to stop drawing it if its already solved for that number
+                            print(len(get_same_number((column,row), states[0])))
+                        elif len(get_same_number((column,row), states[0])) + 1 > 8 :
+                            print(len(get_same_number((column,row), states[0])))
+                            solved_numbers.add(selected_number)
                 # get the squares that need to be overlayed
                 colored_range = list(get_range((column, row)))
                 current_overlay = (column, row)
@@ -300,10 +317,15 @@ while running:
                 # iterates over every button
                 for i in buttons:
                     rect, _, value = i
+
                     # if the button was clicked set the selected number to the current value
                     if rect.collidepoint(event.pos):
-                        changed = True
-                        selected_number = value
+                        if value in solved_numbers:
+                            changed = True
+                            selected_number = None
+                        else:
+                            changed = True
+                            selected_number = value
 
                 # if the click wasnt on the panel set the values to None
                 if not changed:
@@ -376,14 +398,14 @@ while running:
             SUDOKU_Y_POSITION + i * BOX_SIZE,
             SUDOKU_X_POSITION,
             LINE_WIDTH,
-            SUDOKU_DIMENSION,
+            SUDOKU_BOARD_DIMENSION,
         )
         # set horizontal lines
         pygame.draw.rect(screen, BACKGROUND_LINE_COLOR, line)
         line = pygame.Rect(
             SUDOKU_Y_POSITION,
             SUDOKU_X_POSITION + i * BOX_SIZE,
-            SUDOKU_DIMENSION,
+            SUDOKU_BOARD_DIMENSION,
             LINE_WIDTH,
         )
 
@@ -398,14 +420,14 @@ while running:
             SUDOKU_Y_POSITION + i * BOX_SIZE * 3,
             SUDOKU_X_POSITION,
             LINE_WIDTH,
-            SUDOKU_DIMENSION,
+            SUDOKU_BOARD_DIMENSION,
         )
         # set the horizontal lines
         pygame.draw.rect(screen, BACKGROUND_LINE_COLOR_STRONG, line)
         line = pygame.Rect(
             SUDOKU_Y_POSITION,
             SUDOKU_X_POSITION + i * BOX_SIZE * 3,
-            SUDOKU_DIMENSION,
+            SUDOKU_BOARD_DIMENSION,
             LINE_WIDTH,
         )
         # draw the lines
@@ -476,7 +498,10 @@ while running:
 
     # draw the panel with the numbers
     for i in range(1, len(buttons) + 1):
-
+        
+        # draw only the numbers that are still missing on board
+        if i in solved_numbers:
+            continue
         # if the number is selected draw it with a different color
         if i == selected_number:
             pygame.draw.rect(screen, BLUE_BUTTON, buttons[i - 1][0])
@@ -519,7 +544,7 @@ while running:
             (column * BOX_SIZE + SUDOKU_Y_POSITION, SUDOKU_X_POSITION + row * BOX_SIZE),
         )
 
-    # im not sure what this does xdddd
+    # limit the FPS to 60 
     clock.tick(60)
 
     # update the changes on the screen
