@@ -1,6 +1,6 @@
 import random
 from utils import count_used_squares, is_filled
-from solver import get_options, solve_sudoku
+from solver import get_options, solve_sudoku, has_unique_solution
 
 EMPTY = None
 

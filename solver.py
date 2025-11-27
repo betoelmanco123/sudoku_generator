@@ -100,36 +100,26 @@ def solve_sudoku(sudoku ) -> list[list]:
 
 
 def has_unique_solution(sudoku) -> bool:
-    # Contador de soluciones
     solutions = 0
-    sudoku1 = [row[:] for row in sudoku]
 
-    def backtrack(sudoku_2):
-        sudoku = [row[:] for row in sudoku_2]
+    def backtrack():
         nonlocal solutions
-
-        # Si ya encontramos más de 1 solución, no hace falta seguir
         if solutions > 1:
-            return True
-
+            return
         if is_filled(sudoku):
             solutions += 1
             return
+        target = get_next_target(sudoku)
+        if not target:
+            return
+        row, column = target
+        for v in get_options(sudoku, (row, column)):
+            sudoku[row][column] = v
+            backtrack()
+            if solutions > 1:
+                sudoku[row][column] = EMPTY
+                return
+            sudoku[row][column] = EMPTY
 
-        # Elegir siguiente casilla
-        row, column = get_next_target(sudoku)
-        options = get_options(sudoku, (row, column))
-
-        for k in options:
-            sudoku[row][column] = k
-            if backtrack(sudoku):
-                return True
-
-        sudoku[row][column] = EMPTY  # deshacer
-        return False
-
-    # Trabajar sobre una copia para no modificar el original
-    sudoku_copy = [row[:] for row in sudoku1]
-    backtrack(sudoku_copy)
-
+    backtrack()
     return solutions == 1

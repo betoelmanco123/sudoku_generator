@@ -176,7 +176,7 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN:
             # position of the mouse when clicked
             mouse_x, mouse_y = event.pos
-            # if the mouse was on the sudoku board and
+            # if the mouse was on the sudoku board 
             if (
                 SUDOKU_Y_POSITION < mouse_x < SUDOKU_BOARD_DIMENSION + SUDOKU_Y_POSITION
                 and SUDOKU_X_POSITION < mouse_y < SUDOKU_BOARD_DIMENSION + SUDOKU_X_POSITION

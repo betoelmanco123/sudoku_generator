@@ -41,7 +41,7 @@ def print_sudoku(sudoku) -> None:
 
 # |--------------------pygame---------------------------|
 """
-Functions that whose only purpose in life is to help the pygame runner 
+Functions whose only purpose in life is to help the pygame runner 
 dont need to be documented
 """
 def get_range(position: tuple[int, int]) -> list[int]:
