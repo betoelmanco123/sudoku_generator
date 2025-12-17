@@ -34,7 +34,7 @@ python source/runner.py
 ```
 This will run the game
 
-![Sudoku demostration](sudoku_demostration.gif)
+![Sudoku demostration](sudoku_game.gif)
 
 ## Explanation
 This section describes the implementation of a Sudoku generator.
