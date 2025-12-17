@@ -1,6 +1,6 @@
 # SUDOKU GENERATOR
 
-![Sudoku demostration](sudoku_demonstration.gif)
+![Sudoku demostration](sudoku_demostration.gif.gif)
 
 This document describes the implementation of a Sudoku generator.
 It explains how the data is handled and provides detailed descriptions of each function in the system.
