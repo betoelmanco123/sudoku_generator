@@ -1,8 +1,43 @@
 # SUDOKU GENERATOR
 
+A Python-based Sudoku generator and solver that creates valid 9×9 Sudoku puzzles with unique solutions. The repository includes both runnable scripts and detailed documentation of the implementation.  
+
+---
+
+## Table of Contents
+
+- [Requirements](#requirements)  
+- [Installation](#installation)  
+- [Usage](#usage)  
+- [Examples](#examples)  
+- [Explanation](#explanation)
+
+---
+
+## Requirements
+
+This project is written in **Python** and depends on a few standard libraries. You can install all requirements using:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Installation
+```bash
+git clone https://github.com/betoelmanco123/sudoku_generator.git
+cd sudoku_generator
+```
+## Usage
+Once installed you can run the generator from the command line:
+```bash
+python source/runner.py
+```
+This will run the game
+
 ![Sudoku demostration](sudoku_demostration.gif)
 
-This document describes the implementation of a Sudoku generator.
+## Explanation
+This section describes the implementation of a Sudoku generator.
 It explains how the data is handled and provides detailed descriptions of each function in the system.
 All explanations are presented in both pseudocode and Python.
 
