@@ -36,6 +36,14 @@ LINE_WIDTH = 2
 BACKGROUND_LINE_COLOR = (235, 237, 242)
 BACKGROUND_LINE_COLOR_STRONG = (102, 114, 132)
 
+# result lines stuff
+RESULT_LINE_STUFF = 5
+WON_LINE_COLOR = (100, 237, 100)
+FAIL_LINE_COLOR = (237, 100, 100)
+
+# result lines position
+
+
 # size for the font
 FONT_SIZE = SUDOKU_BOARD_DIMENSION // 16
 
@@ -46,7 +54,7 @@ result = None
 selected_number = None
 minutes = 0
 
-#the numbers that need to be colored sinces a relative hsa been selected
+# the numbers that need to be colored sinces a relative hsa been selected
 colored_range = None
 
 # the numbers that already are solved on the board
@@ -61,7 +69,7 @@ level = 1
 # start without overlay on the board
 current_overlay = None
 relatives = None
-
+error_overlay = None
 # create a screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sudoku")
@@ -73,7 +81,7 @@ background = pygame.Rect(0, 0, WIDTH, HEIGHT)
 # an auxiliar function
 def draw_button(rect, font):
     pygame.draw.rect(screen, GRAY_BTN, rect)
-    screen.blit(font, (rect.x + 20, rect.y + 5))
+    screen.blit(font, (buttons[i - 1][0].x + 15, buttons[i - 1][0].y + 5))
 
 
 # main font
@@ -100,6 +108,7 @@ ai = font.render("Solve", True, QUITE_BLUE)
 
 # eraser button
 erase_button = pygame.Rect(875, 635, 250, 70)
+erase1 = font.render("Eraser", True, (255, 255, 255))
 erase = font.render("Eraser", True, QUITE_BLUE)
 
 # mistakes counter
@@ -148,6 +157,8 @@ hard_text = little_font.render("Hard", True, QUITE_BLUE)
 
 # the states the board have (if have more than one then is an animation)
 states = [get_playable_sudoku(0)]
+# saved sudokus
+saved_sudoku = [[x for x in row] for row in states[0]]
 
 # store the solution for the initial sudoku
 _, solved_state, _ = solve_sudoku(states[0])
@@ -159,72 +170,88 @@ timer = pygame.Rect(875, 65, 250, 80)
 
 # selected square relatives
 overlay = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
+overlay_color_error = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay_relatives = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay.fill((85, 159, 235, 50))
+overlay_color_error.fill((200, 0, 0, 50))
 overlay_relatives.fill((59, 111, 164, 50))
 
 # ----------------------------------- Game Loop ------------------------------------ #
 while running:
     # event detector
     for event in pygame.event.get():
-        
+
         # stop the game with the red button xd
         if event.type == pygame.QUIT:
             running = False
-            
+
         # whenever the mouse is clicked
         if event.type == pygame.MOUSEBUTTONDOWN:
             # position of the mouse when clicked
             mouse_x, mouse_y = event.pos
-            # if the mouse was on the sudoku board 
+            # if the mouse was on the sudoku board
             if (
                 SUDOKU_Y_POSITION < mouse_x < SUDOKU_BOARD_DIMENSION + SUDOKU_Y_POSITION
-                and SUDOKU_X_POSITION < mouse_y < SUDOKU_BOARD_DIMENSION + SUDOKU_X_POSITION
+                and SUDOKU_X_POSITION
+                < mouse_y
+                < SUDOKU_BOARD_DIMENSION + SUDOKU_X_POSITION
                 and error_counter < 3
             ):
                 # deteminate the square positon the mouse was on
                 row = int((mouse_x - SUDOKU_Y_POSITION) // BOX_SIZE)
                 column = int((mouse_y - SUDOKU_X_POSITION) // BOX_SIZE)
 
+                # if saved_sudoku[column][row] is not None
                 # if a number was selected before from the number panel
                 if selected_number:
 
+                    # update the error overlay
+                    if (row, column) == error_overlay:
+                        error_overlay = None
+
                     # when the eraser was selected
-                    if selected_number == "#":
+                    if selected_number == "#" and saved_sudoku[column][row] is None:
+
+                        solved_numbers.discard(states[0][column][row])
                         states[0][column][row] = None
                     # when an actual number was selected
-                    else:
+                    elif saved_sudoku[column][row] is None:
+                        solved_numbers.discard(states[0][column][row])
                         states[0][column][row] = selected_number
-                        
-
 
                         # if the number is wrong, update the error counter
                         if states[0][column][row] != solved_state[column][row]:
                             error_counter += 1
+                            error_overlay = (row, column)
                         # if the number is correct check how many times the number is on the sudoku
                         # to stop drawing it if its already solved for that number
 
-                        elif len(get_same_number((column,row), states[0])) + 1 > 8 :
+                        elif len(get_same_number((column, row), states[0])) + 1 > 8:
                             solved_numbers.add(selected_number)
                 # get the squares that need to be overlayed
 
                 colored_range = list(get_range((column, row)))
                 current_overlay = (column, row)
-                relatives = None
+
 
                 # if the square has a number then get the other postions of the same number
                 if states[0][column][row]:
                     current_position = (column, row)
                     relatives = get_same_number((column, row), states[0])
             # if the create button is clicked
+
             elif generate_button.collidepoint(event.pos):
                 # since is a new game set the playing mode to True
                 playing = True
 
                 # eliminate the overlay on the squares
+                error_overlay = None
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
+                current_overlay = None
+                result = None
+
                 # reset the minutes and error counter
                 minutes, error_counter = 0, 0
 
@@ -234,6 +261,7 @@ while running:
 
                 # solve the new sudoku and store it
                 _, solved_state, _ = solve_sudoku(states[-1])
+                saved_sudoku = solved_state
 
                 # reset the clock to the current time
                 start_time = pygame.time.get_ticks()
@@ -245,7 +273,6 @@ while running:
 
                 # get the solution and the record
                 _, _, record = solve_sudoku(states[0])
-
                 # if exist a record, then set the states to the record
                 if record:
                     states = record
@@ -253,13 +280,17 @@ while running:
             elif rect_easy.collidepoint(event.pos):
 
                 # reset this values because is a new game
+                error_overlay = None
+                current_overlay = None
                 playing = True
                 relatives = None
                 minutes, error_counter, level = 0, 0, 0
                 solved_numbers = set()
+                result = None
 
                 # set the new sudoku in the screen
                 states = [get_playable_sudoku(level)]
+                saved_sudoku = [[x for x in row] for row in states[0]]
 
                 # get the solution and store it
                 _, solved_state, _ = solve_sudoku(states[0])
@@ -271,16 +302,20 @@ while running:
             elif rect_normal.collidepoint(event.pos):
 
                 # reset this values because is a new game
+                error_overlay = None
+                current_overlay = None
                 playing = True
                 relatives = None
                 minutes, error_counter = 0, 0
                 solved_numbers = set()
+                result = None
 
                 # set the new level of the game
                 level = 1
 
                 # set the new sudoku in the screen
                 states = [get_playable_sudoku(level)]
+                saved_sudoku = [[x for x in row] for row in states[0]]
 
                 # get the solution and store it
                 _, solved_state, _ = solve_sudoku(states[0])
@@ -292,16 +327,20 @@ while running:
             elif rect_hard.collidepoint(event.pos):
 
                 # reset this values because is a new game
+                error_overlay = None
+                current_overlay = None
                 minues, error_counter = 0, 0
                 relatives = None
                 playing = True
                 solved_numbers = set()
+                result = None
 
                 # set the new level of the game
                 level = 2
 
                 # set the new sudoku in the screen
                 states = [get_playable_sudoku(level)]
+                saved_sudoku = [[x for x in row] for row in states[0]]
 
                 # get the solution and store it
                 _, solved_state, _ = solve_sudoku(states[0])
@@ -316,7 +355,6 @@ while running:
             # if the click wasn't on the buttons of before then check the
             # numbers panel
             else:
-
                 changed = False
                 # iterates over every button
                 for i in buttons:
@@ -334,31 +372,10 @@ while running:
                 # if the click wasnt on the panel set the values to None
                 if not changed:
                     selected_number = None
-                    current_overlay = None
-
-    # time
-    seconds = (pygame.time.get_ticks() - start_time) / 1000
-
-    # convert seconds to minutes
-    if seconds >= 59:
-        seconds = seconds
-        minutes += 1
-        start_time = pygame.time.get_ticks()
+                #     current_overlay = None
+                #     relatives = None
 
     # if a game is being solved
-    if playing:
-
-        # show always two digits numbers
-        if seconds <= 9.5 and playing:
-            text = f"{minutes}:0{seconds:.0f} "
-        else:
-            text = f"{minutes}:{seconds:.0f} "
-        if minutes < 10:
-            text = "0" + text
-
-    # if a game is not being solve then set the result
-    else:
-        text = f"{result}"
 
     # select the color of the buttons difficult
     for i in range(3):
@@ -384,10 +401,60 @@ while running:
     if playing and len(states) == 1 and is_filled(states[0]):
         playing = False
         result = "Solved"
+
+    # time
+    if playing:
+        seconds = (pygame.time.get_ticks() - start_time) / 1000
+
+    # convert seconds to minutes
+    if seconds >= 59:
+        seconds = seconds
+        minutes += 1
+        start_time = pygame.time.get_ticks()
+
+    # show always two digits numbers
+    if seconds <= 9.5:
+        text = f"{minutes}:0{seconds:.0f} "
+    else:
+        text = f"{minutes}:{seconds:.0f} "
+    if minutes < 10:
+        text = "0" + text
+
+    # if a game is not being solve then set the result
+    if not playing:
+
+        if result == "Failed":
+            line_color = FAIL_LINE_COLOR
+        else:
+            line_color = WON_LINE_COLOR
+        line_result = pygame.Rect(
+            SUDOKU_X_POSITION - RESULT_LINE_STUFF,
+            SUDOKU_Y_POSITION,
+            RESULT_LINE_STUFF,
+            SUDOKU_BOARD_DIMENSION + RESULT_LINE_STUFF,
+        )
+        line_result_1 = pygame.Rect(
+            SUDOKU_X_POSITION + SUDOKU_BOARD_DIMENSION + 2,
+            SUDOKU_Y_POSITION,
+            RESULT_LINE_STUFF,
+            SUDOKU_BOARD_DIMENSION + RESULT_LINE_STUFF,
+        )
+        line_result_2 = pygame.Rect(
+            SUDOKU_Y_POSITION - RESULT_LINE_STUFF,
+            SUDOKU_X_POSITION + SUDOKU_BOARD_DIMENSION + 2,
+            SUDOKU_BOARD_DIMENSION + RESULT_LINE_STUFF * 2,
+            RESULT_LINE_STUFF,
+        )
     # ---------------------------------- Draw -------------------------------
 
     # draw the background
+
     pygame.draw.rect(screen, (255, 255, 255), background)
+    if result is not None:
+
+        pygame.draw.rect(screen, line_color, line_result)
+        pygame.draw.rect(screen, line_color, line_result_1)
+        pygame.draw.rect(screen, line_color, line_result_2)
 
     # draw the clock
     clock_text = font.render(text, True, (255, 255, 255))
@@ -472,14 +539,15 @@ while running:
     screen.blit(ai, (AI_button.x + 70, AI_button.y + 5))
 
     # if the selected number is a number draw the number
-    if isinstance(selected_number, int):
+    if isinstance(selected_number, str):
+
         pygame.draw.rect(screen, GRAY_BTN, erase_button)
+        erase1 = font.render("Eraser", True, (255, 255, 255))
         screen.blit(erase, (erase_button.x + 60, erase_button.y + 5))
 
     # if is the eraser then draw Eraser xddddd
     else:
         pygame.draw.rect(screen, BLUE_BUTTON, erase_button)
-        erase1 = font.render("Eraser", True, (255, 255, 255))
         screen.blit(erase1, (erase_button.x + 60, erase_button.y + 5))
 
     # draw the counter of mistakes
@@ -502,7 +570,7 @@ while running:
 
     # draw the panel with the numbers
     for i in range(1, len(buttons) + 1):
-        
+
         # draw only the numbers that are still missing on board
         if i in solved_numbers:
             continue
@@ -531,25 +599,37 @@ while running:
     # colorate the same numbers as the selected one
     if relatives:
         relatives = get_same_number(current_position, states[0])
-        for i in relatives:
-            row, column = i
+        if relatives:
+            for i in relatives:
+                row, column = i
+                screen.blit(
+                    overlay_relatives,
+                    (
+                        column * BOX_SIZE + SUDOKU_Y_POSITION,
+                        SUDOKU_X_POSITION + row * BOX_SIZE,
+                    ),
+                )
+
+    # colorate the square selectionated
+    if current_overlay:
+        if not current_overlay == error_overlay:
+
+            row, column = current_overlay
             screen.blit(
-                overlay_relatives,
+                overlay,
                 (
                     column * BOX_SIZE + SUDOKU_Y_POSITION,
                     SUDOKU_X_POSITION + row * BOX_SIZE,
                 ),
             )
 
-    # colorate the square selectionated
-    if current_overlay:
-        row, column = current_overlay
+    if error_overlay:
+        column, row = error_overlay
         screen.blit(
-            overlay,
+            overlay_color_error,
             (column * BOX_SIZE + SUDOKU_Y_POSITION, SUDOKU_X_POSITION + row * BOX_SIZE),
         )
-
-    # limit the FPS to 60 
+    # limit the FPS to 60
     clock.tick(60)
 
     # update the changes on the screen

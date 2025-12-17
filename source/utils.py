@@ -62,7 +62,10 @@ def get_range(position: tuple[int, int]) -> list[int]:
 def get_same_number(position, sudoku):
     row, column = position
     value = sudoku[row][column]
+    if value is None:
+        return 
     everything = set()
+    
     for i in range(9):
         for j in range(9):
             if i != row and j != column and sudoku[i][j] == value:
