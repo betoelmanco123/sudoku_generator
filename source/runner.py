@@ -203,9 +203,8 @@ while running:
                             error_counter += 1
                         # if the number is correct check how many times the number is on the sudoku
                         # to stop drawing it if its already solved for that number
-                            print(len(get_same_number((column,row), states[0])))
+
                         elif len(get_same_number((column,row), states[0])) + 1 > 8 :
-                            print(len(get_same_number((column,row), states[0])))
                             solved_numbers.add(selected_number)
                 # get the squares that need to be overlayed
                 colored_range = list(get_range((column, row)))
@@ -223,7 +222,7 @@ while running:
                 # eliminate the overlay on the squares
                 relatives = None
                 colored_range = list()
-
+                solved_numbers = set()
                 # reset the minutes and error counter
                 minutes, error_counter = 0, 0
 
@@ -255,6 +254,7 @@ while running:
                 playing = True
                 relatives = None
                 minutes, error_counter, level = 0, 0, 0
+                solved_numbers = set()
 
                 # set the new sudoku in the screen
                 states = [get_playable_sudoku(level)]
@@ -272,6 +272,7 @@ while running:
                 playing = True
                 relatives = None
                 minutes, error_counter = 0, 0
+                solved_numbers = set()
 
                 # set the new level of the game
                 level = 1
@@ -292,6 +293,7 @@ while running:
                 minues, error_counter = 0, 0
                 relatives = None
                 playing = True
+                solved_numbers = set()
 
                 # set the new level of the game
                 level = 2
