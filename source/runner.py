@@ -207,12 +207,14 @@ while running:
                         elif len(get_same_number((column,row), states[0])) + 1 > 8 :
                             solved_numbers.add(selected_number)
                 # get the squares that need to be overlayed
+
                 colored_range = list(get_range((column, row)))
                 current_overlay = (column, row)
                 relatives = None
 
                 # if the square has a number then get the other postions of the same number
                 if states[0][column][row]:
+                    current_position = (column, row)
                     relatives = get_same_number((column, row), states[0])
             # if the create button is clicked
             elif generate_button.collidepoint(event.pos):
@@ -528,6 +530,7 @@ while running:
 
     # colorate the same numbers as the selected one
     if relatives:
+        relatives = get_same_number(current_position, states[0])
         for i in relatives:
             row, column = i
             screen.blit(
