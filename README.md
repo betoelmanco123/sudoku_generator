@@ -97,7 +97,6 @@ sudoku_generator/
 
 * The Sudoku generator uses **backtracking and constraint checking** to ensure validity.
 * Puzzle generation removes values while verifying that the solution remains unique.
-* The project is intended as a **learning and demonstration tool**, not a commercial game.
 
 Feel free to explore the source code and documentation for deeper explanations of the algorithms involved.
 
