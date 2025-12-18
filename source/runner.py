@@ -233,7 +233,6 @@ while running:
                 colored_range = list(get_range((column, row)))
                 current_overlay = (column, row)
 
-
                 # if the square has a number then get the other postions of the same number
                 if states[0][column][row]:
                     current_position = (column, row)
@@ -260,33 +259,41 @@ while running:
                 _, states = _get_playable_sudoku(level)
 
                 # solve the new sudoku and store it
+                saved_sudoku = states[-1]
                 _, solved_state, _ = solve_sudoku(states[-1])
-                saved_sudoku = solved_state
 
                 # reset the clock to the current time
                 start_time = pygame.time.get_ticks()
 
             elif AI_button.collidepoint(event.pos):
 
-                # eliminate the overlay on the squares
-                colored_range = list()
+                if not is_filled(states[0]):
+                    # eliminate the overlay on the squares
+                    solved_numbers = set()
+                    colored_range = list()
+                    result = None
 
-                # get the solution and the record
-                _, _, record = solve_sudoku(states[0])
-                # if exist a record, then set the states to the record
-                if record:
-                    states = record
+                    # get the solution and the record
+                    _, _, record = solve_sudoku(states[0])
+                    # if exist a record, then set the states to the record
+                    if record:
+                        states = record
 
             elif rect_easy.collidepoint(event.pos):
 
+                # since is a new game set the playing mode to True
+                playing = True
+
                 # reset this values because is a new game
                 error_overlay = None
-                current_overlay = None
-                playing = True
                 relatives = None
-                minutes, error_counter, level = 0, 0, 0
+                colored_range = list()
                 solved_numbers = set()
+                current_overlay = None
                 result = None
+
+                # reset the clock and set the level to 0
+                minutes, error_counter, level = 0, 0, 0
 
                 # set the new sudoku in the screen
                 states = [get_playable_sudoku(level)]
@@ -297,7 +304,6 @@ while running:
 
                 # restart the clock
                 start_time = pygame.time.get_ticks()
-                colored_range = list()
 
             elif rect_normal.collidepoint(event.pos):
 
@@ -326,14 +332,19 @@ while running:
 
             elif rect_hard.collidepoint(event.pos):
 
+                # since is a new game set the playing mode to True
+                playing = True
+
                 # reset this values because is a new game
                 error_overlay = None
-                current_overlay = None
-                minues, error_counter = 0, 0
                 relatives = None
-                playing = True
+                colored_range = list()
                 solved_numbers = set()
+                current_overlay = None
                 result = None
+
+                # reset the clock
+                minutes, error_counter = 0, 0
 
                 # set the new level of the game
                 level = 2
@@ -346,7 +357,6 @@ while running:
                 _, solved_state, _ = solve_sudoku(states[0])
                 # restart the clock
                 start_time = pygame.time.get_ticks()
-                colored_range = list()
 
             elif erase_button.collidepoint(event.pos):
                 # use the '#' because idk
