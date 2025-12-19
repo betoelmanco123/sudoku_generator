@@ -39,7 +39,7 @@ BACKGROUND_LINE_COLOR_STRONG = (102, 114, 132)
 # result lines stuff
 RESULT_LINE_STUFF = 5
 WON_LINE_COLOR = (100, 237, 100)
-FAIL_LINE_COLOR = (237, 100, 100)
+FAIL_LINE_COLOR = (227, 6, 19)
 
 # result lines position
 
@@ -69,7 +69,7 @@ level = 1
 # start without overlay on the board
 current_overlay = None
 relatives = None
-error_overlay = None
+error_overlay = list()
 # create a screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sudoku")
@@ -173,7 +173,7 @@ overlay = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay_color_error = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay_relatives = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay.fill((85, 159, 235, 50))
-overlay_color_error.fill((200, 0, 0, 50))
+overlay_color_error.fill((255, 6, 19, 50))
 overlay_relatives.fill((59, 111, 164, 50))
 
 # ----------------------------------- Game Loop ------------------------------------ #
@@ -203,11 +203,11 @@ while running:
 
                 # if saved_sudoku[column][row] is not None
                 # if a number was selected before from the number panel
-                if selected_number:
+                if selected_number and playing:
 
                     # update the error overlay
-                    if (row, column) == error_overlay:
-                        error_overlay = None
+                    if (row, column) in error_overlay:
+                        error_overlay.remove((row, column))
 
                     # when the eraser was selected
                     if selected_number == "#" and saved_sudoku[column][row] is None:
@@ -222,7 +222,7 @@ while running:
                         # if the number is wrong, update the error counter
                         if states[0][column][row] != solved_state[column][row]:
                             error_counter += 1
-                            error_overlay = (row, column)
+                            error_overlay.append((row, column))
                         # if the number is correct check how many times the number is on the sudoku
                         # to stop drawing it if its already solved for that number
 
@@ -244,7 +244,7 @@ while running:
                 playing = True
 
                 # eliminate the overlay on the squares
-                error_overlay = None
+                error_overlay = list()
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
@@ -285,7 +285,7 @@ while running:
                 playing = True
 
                 # reset this values because is a new game
-                error_overlay = None
+                error_overlay = list()
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
@@ -308,7 +308,7 @@ while running:
             elif rect_normal.collidepoint(event.pos):
 
                 # reset this values because is a new game
-                error_overlay = None
+                error_overlay = list()
                 current_overlay = None
                 playing = True
                 relatives = None
@@ -336,7 +336,7 @@ while running:
                 playing = True
 
                 # reset this values because is a new game
-                error_overlay = None
+                error_overlay = list()
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
@@ -460,6 +460,8 @@ while running:
     # draw the background
 
     pygame.draw.rect(screen, (255, 255, 255), background)
+
+    # draw the color of the result if the game has ended
     if result is not None:
 
         pygame.draw.rect(screen, line_color, line_result)
@@ -633,8 +635,9 @@ while running:
                 ),
             )
 
-    if error_overlay:
-        column, row = error_overlay
+    # draw the errors if needed
+    for i in error_overlay:
+        column, row = i
         screen.blit(
             overlay_color_error,
             (column * BOX_SIZE + SUDOKU_Y_POSITION, SUDOKU_X_POSITION + row * BOX_SIZE),
