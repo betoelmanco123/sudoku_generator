@@ -1,6 +1,6 @@
 # SUDOKU GENERATOR
 
-A Python-based **Sudoku generator and solver** that creates valid 9×9 Sudoku puzzles with **unique solutions**. The repository includes runnable scripts as well as documentation explaining the core ideas behind the implementation.
+A Python-based **Sudoku generator and solver** built with Pygame that creates valid 9×9 Sudoku puzzles with **unique solutions**. The repository includes runnable scripts as well as documentation explaining the core ideas behind the implementation.
 
 ---
 
@@ -49,6 +49,15 @@ This will launch the Sudoku game in a graphical window.
 ![Sudoku demonstration](/media/sudoku_game.gif)
 
 ---
+## Features
+
+- Sudoku generator with guaranteed **unique solutions**
+- Multiple difficulty levels
+- Visual error highlighting
+- Mistake counter with fail condition
+- Built-in solver with step-by-step animation
+- Interactive graphical interface built with Pygame
+
 
 ## How to Play
 
@@ -100,3 +109,8 @@ sudoku_generator/
 
 Feel free to explore the source code and documentation for deeper explanations of the algorithms involved.
 
+## Motivation
+
+This project was developed as a personal exercise to explore
+game architecture, algorithmic problem solving, and UI design
+using Python and Pygame.
