@@ -62,6 +62,7 @@ solved_numbers = set()
 
 # error counter
 error_counter = 0
+error_limit = 10
 
 # start in normal difficulty
 level = 1
@@ -69,7 +70,7 @@ level = 1
 # start without overlay on the board
 current_overlay = None
 relatives = None
-error_overlay = list()
+error_overlay = set()
 # create a screen
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Sudoku")
@@ -82,6 +83,45 @@ background = pygame.Rect(0, 0, WIDTH, HEIGHT)
 def draw_button(rect, font):
     pygame.draw.rect(screen, GRAY_BTN, rect)
     screen.blit(font, (buttons[i - 1][0].x + 15, buttons[i - 1][0].y + 5))
+
+
+def set_square(position, number):
+    global states, solved_state
+    global error_counter, error_overlay
+    global colored_range, current_overlay, current_position, relatives
+    if number in solved_numbers:
+        return
+    error_overlay.discard((row, column))
+
+    row, column = position
+    if states[0][column][row] == number:
+        return
+    # update the error overlay
+    
+    # when the square is empty from start
+    if saved_sudoku[column][row] is None:
+        states[0][column][row] = number
+
+        # if the number is wrong, update the error counter
+        if ( states[0][column][row] != solved_state[column][row]
+        ):
+            error_counter += 1
+            error_overlay.add((row, column))
+        # if the number is correct check how many times the number is on the sudoku
+        # to stop drawing it if its already solved for that number
+
+        elif (
+            states[0][column][row]
+            and len(get_same_number((column, row), states[0])) + 1 > 8
+        ):
+            solved_numbers.add(number)
+        colored_range = list(get_range((column, row)))
+        current_overlay = (column, row)
+
+        # if the square has a number then get the other postions of the same number
+        if states[0][column][row]:
+            current_position = (column, row)
+            relatives = get_same_number((column, row), states[0])
 
 
 # main font
@@ -118,7 +158,9 @@ rect_mistake = pygame.Rect(
     BOX_SIZE * 1.666,
     BOX_SIZE / 2,
 )
-mistakes = font.render(f"mistakes {error_counter} / 3", True, (255, 255, 255))
+mistakes = font.render(
+    f"mistakes {error_counter} / {error_limit}", True, (255, 255, 255)
+)
 
 # number panel
 buttons = []
@@ -175,7 +217,8 @@ overlay_relatives = pygame.Surface((BOX_SIZE, BOX_SIZE), pygame.SRCALPHA)
 overlay.fill((85, 159, 235, 50))
 overlay_color_error.fill((255, 6, 19, 50))
 overlay_relatives.fill((59, 111, 164, 50))
-
+selected_square = None
+# get the squares that need to be overlayed
 # ----------------------------------- Game Loop ------------------------------------ #
 while running:
     # event detector
@@ -186,6 +229,30 @@ while running:
             running = False
 
         # whenever the mouse is clicked
+
+        if event.type == pygame.KEYDOWN:
+            if selected_square and playing:
+                if event.key == pygame.K_1:
+                    set_square(selected_square, 1)
+                if event.key == pygame.K_2:
+                    set_square(selected_square, 2)
+                if event.key == pygame.K_3:
+                    set_square(selected_square, 3)
+                if event.key == pygame.K_4:
+                    set_square(selected_square, 4)
+                if event.key == pygame.K_5:
+                    set_square(selected_square, 5)
+                if event.key == pygame.K_6:
+                    set_square(selected_square, 6)
+                if event.key == pygame.K_7:
+                    set_square(selected_square, 7)
+                if event.key == pygame.K_8:
+                    set_square(selected_square, 8)
+                if event.key == pygame.K_9:
+                    set_square(selected_square, 9)
+
+                if event.key == pygame.K_BACKSPACE:
+                    set_square(selected_square, None)
         if event.type == pygame.MOUSEBUTTONDOWN:
             # position of the mouse when clicked
             mouse_x, mouse_y = event.pos
@@ -195,19 +262,20 @@ while running:
                 and SUDOKU_X_POSITION
                 < mouse_y
                 < SUDOKU_BOARD_DIMENSION + SUDOKU_X_POSITION
-                and error_counter < 3
+                and error_counter < error_limit
             ):
                 # deteminate the square positon the mouse was on
                 row = int((mouse_x - SUDOKU_Y_POSITION) // BOX_SIZE)
                 column = int((mouse_y - SUDOKU_X_POSITION) // BOX_SIZE)
+                selected_square = (row, column)
 
                 # if saved_sudoku[column][row] is not None
                 # if a number was selected before from the number panel
                 if selected_number and playing:
 
                     # update the error overlay
-                    if (row, column) in error_overlay:
-                        error_overlay.remove((row, column))
+
+                    error_overlay.discard((row, column))
 
                     # when the eraser was selected
                     if selected_number == "#" and saved_sudoku[column][row] is None:
@@ -222,7 +290,7 @@ while running:
                         # if the number is wrong, update the error counter
                         if states[0][column][row] != solved_state[column][row]:
                             error_counter += 1
-                            error_overlay.append((row, column))
+                            error_overlay.add((row, column))
                         # if the number is correct check how many times the number is on the sudoku
                         # to stop drawing it if its already solved for that number
 
@@ -234,9 +302,11 @@ while running:
                 current_overlay = (column, row)
 
                 # if the square has a number then get the other postions of the same number
+                current_position = (column, row)
                 if states[0][column][row]:
-                    current_position = (column, row)
                     relatives = get_same_number((column, row), states[0])
+                else:
+                    relatives = []
             # if the create button is clicked
 
             elif generate_button.collidepoint(event.pos):
@@ -244,7 +314,7 @@ while running:
                 playing = True
 
                 # eliminate the overlay on the squares
-                error_overlay = list()
+                error_overlay = set()
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
@@ -259,7 +329,7 @@ while running:
                 _, states = _get_playable_sudoku(level)
 
                 # solve the new sudoku and store it
-                saved_sudoku = states[-1]
+                saved_sudoku = [[x for x in row] for row in states[-1]]
                 _, solved_state, _ = solve_sudoku(states[-1])
 
                 # reset the clock to the current time
@@ -285,7 +355,7 @@ while running:
                 playing = True
 
                 # reset this values because is a new game
-                error_overlay = list()
+                error_overlay = set()
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
@@ -308,7 +378,7 @@ while running:
             elif rect_normal.collidepoint(event.pos):
 
                 # reset this values because is a new game
-                error_overlay = list()
+                error_overlay = set()
                 current_overlay = None
                 playing = True
                 relatives = None
@@ -336,7 +406,7 @@ while running:
                 playing = True
 
                 # reset this values because is a new game
-                error_overlay = list()
+                error_overlay = set()
                 relatives = None
                 colored_range = list()
                 solved_numbers = set()
@@ -377,6 +447,7 @@ while running:
                             selected_number = None
                         else:
                             changed = True
+
                             selected_number = value
 
                 # if the click wasnt on the panel set the values to None
@@ -400,8 +471,9 @@ while running:
         states.pop(0)
 
     # if the user reach 3 mistakes, then the playing mode stop
-    if error_counter >= 3:
+    if error_counter >= error_limit:
         playing = False
+        selected_square = None
         # the text the clock shows
         result = "Failed"
 
@@ -563,7 +635,9 @@ while running:
         screen.blit(erase1, (erase_button.x + 60, erase_button.y + 5))
 
     # draw the counter of mistakes
-    mistakes = little_font.render(f"Mistakes: {error_counter} / 3", True, (0, 0, 0))
+    mistakes = little_font.render(
+        f"Mistakes: {error_counter} / {error_limit}", True, (0, 0, 0)
+    )
     screen.blit(mistakes, (rect_mistake.x + (BOX_SIZE * 1.666) / 4, rect_mistake.y + 1))
 
     # draw the button of difficultt easy
