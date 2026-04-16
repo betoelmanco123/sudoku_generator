@@ -91,9 +91,9 @@ def set_square(position, number):
     global colored_range, current_overlay, current_position, relatives
     if number in solved_numbers:
         return
+    row, column = position
     error_overlay.discard((row, column))
 
-    row, column = position
     if states[0][column][row] == number:
         return
     # update the error overlay
